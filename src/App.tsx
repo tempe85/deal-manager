@@ -1,25 +1,76 @@
-import React from 'react';
-import logo from './logo.svg';
-import './App.css';
+import React from "react";
+import "./App.css";
+import { BrowserRouter as Router, Switch, Route } from "react-router-dom";
+import {
+  Customers,
+  Transactions,
+  Dashboard,
+  Locations,
+  LocationDeals,
+  Chains,
+  RestaurantChainLocations,
+} from "./Pages";
+import Deals from "./Pages/Deals";
+import "react-bootstrap-table-next/dist/react-bootstrap-table2.min.css";
 
+export const routes = [
+  // {
+  //   path: "/",
+  //   exact: true,
+  //   sidebar: () => <div></div>,
+  //   main: () => <Dashboard />,
+  // },
+  {
+    path: "/",
+    exact: true,
+    sidebar: () => <div></div>,
+    main: () => <Transactions />,
+  },
+  {
+    path: "/Customers",
+    sidebar: () => <div></div>,
+    main: () => <Customers />,
+  },
+  {
+    path: "/Deals",
+    sidebar: () => <div></div>,
+    main: () => <Deals />,
+  },
+  {
+    path: "/Locations",
+    sidebar: () => <div></div>,
+    main: () => <RestaurantChainLocations />,
+  },
+  {
+    path: "/Deals",
+    sidebar: () => <div></div>,
+    main: () => <Deals />,
+  },
+  {
+    path: "/LocationDeals",
+    sidebar: () => <div></div>,
+    main: () => <LocationDeals />,
+  },
+  {
+    path: "/Chains",
+    sidebar: () => <div></div>,
+    main: () => <Chains />,
+  },
+];
 function App() {
   return (
-    <div className="App">
-      <header className="App-header">
-        <img src={logo} className="App-logo" alt="logo" />
-        <p>
-          Edit <code>src/App.tsx</code> and save to reload.
-        </p>
-        <a
-          className="App-link"
-          href="https://reactjs.org"
-          target="_blank"
-          rel="noopener noreferrer"
-        >
-          Learn React
-        </a>
-      </header>
-    </div>
+    <Router>
+      <Switch>
+        {routes.map((route, index) => (
+          <Route
+            key={index}
+            path={route.path}
+            exact={route.exact}
+            children={<route.main />}
+          />
+        ))}
+      </Switch>
+    </Router>
   );
 }
 
