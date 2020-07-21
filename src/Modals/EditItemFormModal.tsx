@@ -8,7 +8,7 @@ interface IProps {
   isOpen: boolean;
   children: (toggle: () => void) => React.ReactNode;
 }
-function AddItemFormModal({ title, isOpen, toggle, children }: IProps) {
+function EditFormModal({ title, isOpen, toggle, children }: IProps) {
   return (
     <Modal className={"item-modal"} isOpen={isOpen} toggle={toggle}>
       <ModalHeader toggle={toggle}>{title}</ModalHeader>
@@ -17,4 +17,4 @@ function AddItemFormModal({ title, isOpen, toggle, children }: IProps) {
   );
 }
 
-export default AddItemFormModal;
+export default EditFormModal;

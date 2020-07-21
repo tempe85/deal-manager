@@ -5,12 +5,13 @@ import { faPlus } from "@fortawesome/free-solid-svg-icons";
 
 interface IProps {
   onClick: () => void;
+  title: string;
 }
-function AddItem({ onClick }: IProps) {
+function AddItem({ onClick, title }: IProps) {
   return (
     <Button onClick={onClick} color="success">
       <FontAwesomeIcon icon={faPlus} />
-      <span style={{ paddingLeft: "5px" }}>Add New Entry</span>
+      <span style={{ paddingLeft: "5px" }}>{title}</span>
     </Button>
   );
 }

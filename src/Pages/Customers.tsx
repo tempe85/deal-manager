@@ -1,16 +1,17 @@
 import React, { useState } from "react";
 import Layout from "../Containers/Layout";
-import BootstrapTable from "react-bootstrap-table-next";
-import filterFactory, { textFilter } from "react-bootstrap-table2-filter";
+import { textFilter } from "react-bootstrap-table2-filter";
 import CustomerMockList from "../Mocks/Customer.mock";
 import AddItem from "../Components/AddItem";
-import AddItemFormModal from "../Modals/AddItemFormModal";
-import AddItemForm from "../Components/Forms/AddItemForm";
 import { AddFormTypes } from "../Enums";
 import { ICustomer } from "../Interfaces";
 import { IsObjectNullOrEmpty } from "../Utils";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
-import { faMinusCircle } from "@fortawesome/free-solid-svg-icons";
+import { faMinusCircle, faEdit } from "@fortawesome/free-solid-svg-icons";
+import DataEntityTable from "./Components/DataTable";
+import { Type } from "react-bootstrap-table2-editor";
+import AddItemFormModalHelper from "./Components/AddItemFormModalHelper";
+import EditItemFormModalHelper from "./Components/EditItemFormModalHelper";
 
 export default function Customers() {
   const columns = [
@@ -31,11 +32,15 @@ export default function Customers() {
     {
       dataField: "birthDate",
       text: "Birth Day",
+      editor: {
+        type: Type.DATE,
+      },
     },
     {
       dataField: "df1",
       isDummyField: true,
       text: "Remove",
+      editable: false,
       formatter: (cellContent: any, row: ICustomer) => (
         <FontAwesomeIcon
           style={{ cursor: "pointer" }}
@@ -45,16 +50,40 @@ export default function Customers() {
         />
       ),
     },
+    {
+      dataField: "df2",
+      isDummyField: true,
+      text: "Edit",
+      editable: false,
+      formatter: (cellContent: any, row: ICustomer) => (
+        <FontAwesomeIcon
+          style={{ cursor: "pointer" }}
+          color="green"
+          icon={faEdit}
+          onClick={() => openEditItem(row)}
+        />
+      ),
+    },
   ];
 
   const [addItemModalOpen, setAddItemModalOpen] = useState(false);
+  const [editItemModalIsOpen, setEditItemModalOpen] = useState(false);
+
   const [customerData, setCustomerData] = useState<ICustomer[]>(
     CustomerMockList
   );
 
+  const handleEditCustomer = (row: ICustomer) => {
+    console.log(row);
+  };
+
   const handleAddItemToggle = () => {
     setAddItemModalOpen(!addItemModalOpen);
   };
+  const toggleEditItem = () => {
+    setEditItemModalOpen(!editItemModalIsOpen);
+  };
+
   const handleOpenAddItemModal = () => {
     setAddItemModalOpen(true);
   };
@@ -66,6 +95,8 @@ export default function Customers() {
     );
   };
 
+  const handleEntityEditedSubmited = (config: {}) => {};
+
   const handleCustomerAddSubmited = (config: {}) => {
     const addCustomerData = { ...config } as ICustomer;
     if (IsObjectNullOrEmpty(addCustomerData)) {
@@ -75,37 +106,43 @@ export default function Customers() {
     }
   };
 
+  const handleCellEdited = (oldValue: any, newValue: any) => {
+    console.log(oldValue, newValue);
+  };
+
+  const openEditItem = (row: ICustomer) => {
+    setEditItemModalOpen(true);
+  };
+
   return (
     <Layout>
       <div style={{ padding: "30px", maxWidth: "90%" }}>
         <div style={{ marginBottom: "10px" }}>
-          <AddItem onClick={handleOpenAddItemModal} />
+          <AddItem
+            onClick={handleOpenAddItemModal}
+            title={"Add new Customer"}
+          />
         </div>
-        <BootstrapTable
+        <DataEntityTable
           keyField="discountCardNumber"
           data={customerData}
           columns={columns}
-          filter={filterFactory()}
-          bordered
-          striped
+          afterSaveCell={handleCellEdited}
         />
-        {addItemModalOpen && (
-          <AddItemFormModal
-            isOpen={addItemModalOpen}
-            toggle={handleAddItemToggle}
-            title={"Add a Customer"}
-          >
-            {(toggle) => {
-              return (
-                <AddItemForm
-                  toggleModal={toggle}
-                  onAddSubmited={handleCustomerAddSubmited}
-                  type={AddFormTypes.customer}
-                />
-              );
-            }}
-          </AddItemFormModal>
-        )}
+        <AddItemFormModalHelper
+          handleAddEntitySubmited={handleCustomerAddSubmited}
+          formType={AddFormTypes.customer}
+          handleAddItemToggle={handleAddItemToggle}
+          addItemModalOpen={addItemModalOpen}
+          title={"Add a Customer"}
+        />
+        <EditItemFormModalHelper
+          handleSubmit={handleEntityEditedSubmited}
+          formType={AddFormTypes.customer}
+          title={"Edit a Customer"}
+          editItemModalIsOpen={editItemModalIsOpen}
+          handleToggle={toggleEditItem}
+        />
       </div>
     </Layout>
   );

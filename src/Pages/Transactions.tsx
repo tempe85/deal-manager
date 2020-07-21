@@ -1,16 +1,17 @@
 import React, { useState } from "react";
 import Layout from "../Containers/Layout";
-import BootstrapTable from "react-bootstrap-table-next";
-import filterFactory, { textFilter } from "react-bootstrap-table2-filter";
+import { textFilter } from "react-bootstrap-table2-filter";
 import AddItem from "../Components/AddItem";
-import AddItemFormModal from "../Modals/AddItemFormModal";
-import AddItemForm from "../Components/Forms/AddItemForm";
 import { AddFormTypes } from "../Enums";
 import { ICustomerRestaurantTransaction } from "../Interfaces";
 import { IsObjectNullOrEmpty } from "../Utils";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
-import { faMinusCircle } from "@fortawesome/free-solid-svg-icons";
+import { faMinusCircle, faEdit } from "@fortawesome/free-solid-svg-icons";
 import { CustomerRestaurantTransactionMock } from "../Mocks/CustomerRestaurantTransaction.mock";
+import DataEntityTable from "./Components/DataTable";
+import { Type } from "react-bootstrap-table2-editor";
+import AddItemFormModalHelper from "./Components/AddItemFormModalHelper";
+import EditItemFormModalHelper from "./Components/EditItemFormModalHelper";
 
 export default function Transactions() {
   const columns = [
@@ -38,11 +39,15 @@ export default function Transactions() {
       dataField: "date",
       text: "Date",
       filter: textFilter(),
+      editor: {
+        type: Type.DATE,
+      },
     },
     {
       dataField: "df1",
       isDummyField: true,
       text: "Remove",
+      editable: false,
       formatter: (cellContent: any, row: ICustomerRestaurantTransaction) => (
         <FontAwesomeIcon
           style={{ cursor: "pointer" }}
@@ -52,7 +57,25 @@ export default function Transactions() {
         />
       ),
     },
+    {
+      dataField: "df2",
+      isDummyField: true,
+      text: "Edit",
+      editable: false,
+      formatter: (cellContent: any, row: ICustomerRestaurantTransaction) => (
+        <FontAwesomeIcon
+          style={{ cursor: "pointer" }}
+          color="green"
+          icon={faEdit}
+          onClick={() => openEditItem(row)}
+        />
+      ),
+    },
   ];
+
+  const openEditItem = (row: ICustomerRestaurantTransaction) => {
+    setEditItemModalOpen(true);
+  };
 
   const [addItemModalOpen, setAddItemModalOpen] = useState(false);
   const [transactionData, setTransactionData] = useState<
@@ -82,37 +105,44 @@ export default function Transactions() {
     }
   };
 
+  const handleCellEdited = (oldValue: any, newValue: any) => {
+    console.log(oldValue, newValue);
+  };
+  const [editItemModalIsOpen, setEditItemModalOpen] = useState(false);
+  const handleEntityEditedSubmited = (config: {}) => {};
+  const toggleEditItem = () => {
+    setEditItemModalOpen(!editItemModalIsOpen);
+  };
+
   return (
     <Layout>
       <div style={{ padding: "30px", maxWidth: "90%" }}>
         <div style={{ marginBottom: "10px" }}>
-          <AddItem onClick={handleOpenAddItemModal} />
+          <AddItem
+            onClick={handleOpenAddItemModal}
+            title={"Add new Transaction"}
+          />
         </div>
-        <BootstrapTable
+        <DataEntityTable
           keyField="transactionId"
           data={transactionData}
           columns={columns}
-          filter={filterFactory()}
-          bordered
-          striped
+          afterSaveCell={handleCellEdited}
         />
-        {addItemModalOpen && (
-          <AddItemFormModal
-            isOpen={addItemModalOpen}
-            toggle={handleAddItemToggle}
-            title={"Add a New Transaction"}
-          >
-            {(toggle) => {
-              return (
-                <AddItemForm
-                  toggleModal={toggle}
-                  onAddSubmited={handleAddEntitySubmited}
-                  type={AddFormTypes.customerRestaurantTransaction}
-                />
-              );
-            }}
-          </AddItemFormModal>
-        )}
+        <AddItemFormModalHelper
+          handleAddEntitySubmited={handleAddEntitySubmited}
+          formType={AddFormTypes.customerRestaurantTransaction}
+          handleAddItemToggle={handleAddItemToggle}
+          addItemModalOpen={addItemModalOpen}
+          title={"Add a New Transaction"}
+        />
+        <EditItemFormModalHelper
+          handleSubmit={handleEntityEditedSubmited}
+          formType={AddFormTypes.customer}
+          title={"Edit a Deal"}
+          editItemModalIsOpen={editItemModalIsOpen}
+          handleToggle={toggleEditItem}
+        />
       </div>
     </Layout>
   );
