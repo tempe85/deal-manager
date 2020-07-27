@@ -1,6 +1,6 @@
 import { IRestaurantChainLocation } from "../Interfaces";
 import { ChainNameList } from "./Helpers/ChainNameList";
-import { cityNames } from "./Helpers/CityStateNames";
+import { cityNames } from "./Helpers/CityNames";
 import { GenerateRandomNDigitNumber } from "../Utils";
 
 export const RestaurantChainLocationMock = ChainNameList.map(
@@ -10,8 +10,8 @@ export const RestaurantChainLocationMock = ChainNameList.map(
       discountCardNumber: GenerateRandomNDigitNumber(5),
       dealId: GenerateRandomNDigitNumber(4),
       chainName: value,
-      cityStateName: `${cityNames[index]}, WA`,
-      
+      city: `${cityNames[index]}`,
+      state: "WA",
     };
   }
 ) as IRestaurantChainLocation[];

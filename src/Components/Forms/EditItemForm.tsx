@@ -6,12 +6,13 @@ import { AddFormTypes } from "../../Enums";
 interface IProps {
   toggleModal: () => void;
   type: AddFormTypes;
-  onAddSubmited: (config: {}) => void;
+  onEditSubmited: (config: {}) => void;
+  data: any;
 }
 
-function AddItemForm({ toggleModal, type, onAddSubmited }: IProps) {
+function EditItemForm({ toggleModal, type, onEditSubmited, data }: IProps) {
   const onFormSubmit = (event: any) => {
-    onAddSubmited(config || {});
+    onEditSubmited(config || {});
     toggleModal();
   };
 
@@ -26,7 +27,11 @@ function AddItemForm({ toggleModal, type, onAddSubmited }: IProps) {
 
   return (
     <Form>
-      <AddItemInputs onConfigUpdated={onConfigUpdated} type={type} />
+      <AddItemInputs
+        onConfigUpdated={onConfigUpdated}
+        type={type}
+        data={data}
+      />
       <hr />
       <div style={{ display: "flex", justifyContent: "space-between" }}>
         <Button onClick={toggleModal}>Cancel</Button>
@@ -38,4 +43,4 @@ function AddItemForm({ toggleModal, type, onAddSubmited }: IProps) {
   );
 }
 
-export default AddItemForm;
+export default EditItemForm;

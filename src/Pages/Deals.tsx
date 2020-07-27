@@ -55,11 +55,15 @@ export default function Deals() {
   ];
 
   const openEditItem = (row: IDeal) => {
+    setEditModalData(row);
     setEditItemModalOpen(true);
   };
 
   const [addItemModalOpen, setAddItemModalOpen] = useState(false);
   const [dealData, setDealData] = useState<IDeal[]>(DealsMockList);
+  const [editModalData, setEditModalData] = useState<IDeal | undefined>(
+    undefined
+  );
 
   const handleAddItemToggle = () => {
     setAddItemModalOpen(!addItemModalOpen);
@@ -76,16 +80,26 @@ export default function Deals() {
     if (IsObjectNullOrEmpty(addData)) {
       return;
     } else {
+      const maxLocationId = Math.max(...dealData.map((p) => p.dealId));
+      addData.dealId = maxLocationId + 1;
       setDealData([...dealData, addData]);
     }
   };
 
-  const handleCellEdited = (oldValue: any, newValue: any) => {
-    console.log(oldValue, newValue);
+  const [editItemModalIsOpen, setEditItemModalOpen] = useState(false);
+  const handleEntityEditedSubmited = (config: Partial<IDeal>) => {
+    let data: IDeal[] = [...dealData];
+    let customerIndex = data?.findIndex((p) => p.dealId === config?.dealId);
+    if (customerIndex === -1) {
+      return;
+    }
+    data[customerIndex] = {
+      ...data[customerIndex],
+      ...config,
+    };
+    setDealData(data);
   };
 
-  const [editItemModalIsOpen, setEditItemModalOpen] = useState(false);
-  const handleEntityEditedSubmited = (config: {}) => {};
   const toggleEditItem = () => {
     setEditItemModalOpen(!editItemModalIsOpen);
   };
@@ -96,12 +110,7 @@ export default function Deals() {
         <div style={{ marginBottom: "10px" }}>
           <AddItem onClick={handleOpenAddItemModal} title={"Add new Deal"} />
         </div>
-        <DataEntityTable
-          keyField="dealId"
-          data={dealData}
-          columns={columns}
-          afterSaveCell={handleCellEdited}
-        />
+        <DataEntityTable keyField="dealId" data={dealData} columns={columns} />
         <AddItemFormModalHelper
           handleAddEntitySubmited={handleAddEntitySubmited}
           formType={AddFormTypes.deal}
@@ -111,10 +120,11 @@ export default function Deals() {
         />
         <EditItemFormModalHelper
           handleSubmit={handleEntityEditedSubmited}
-          formType={AddFormTypes.customer}
+          formType={AddFormTypes.deal}
           title={"Edit a Deal"}
           editItemModalIsOpen={editItemModalIsOpen}
           handleToggle={toggleEditItem}
+          data={editModalData}
         />
       </div>
     </Layout>

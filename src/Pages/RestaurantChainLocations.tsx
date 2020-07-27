@@ -25,8 +25,13 @@ export default function RestaurantChainLocations() {
       filter: textFilter(),
     },
     {
-      dataField: "cityStateName",
-      text: "City/State Name",
+      dataField: "city",
+      text: "City",
+      filter: textFilter(),
+    },
+    {
+      dataField: "state",
+      text: "State",
       filter: textFilter(),
     },
     {
@@ -60,6 +65,7 @@ export default function RestaurantChainLocations() {
   ];
 
   const openEditItem = (row: IRestaurantChainLocation) => {
+    setEditModalData(row);
     setEditItemModalOpen(true);
   };
 
@@ -67,6 +73,9 @@ export default function RestaurantChainLocations() {
   const [chainLocationData, setChainLocationData] = useState<
     IRestaurantChainLocation[]
   >(RestaurantChainLocationMock);
+  const [editModalData, setEditModalData] = useState<
+    IRestaurantChainLocation | undefined
+  >(undefined);
 
   const handleAddItemToggle = () => {
     setAddItemModalOpen(!addItemModalOpen);
@@ -87,15 +96,32 @@ export default function RestaurantChainLocations() {
     if (IsObjectNullOrEmpty(addData)) {
       return;
     } else {
+      const maxLocationId = Math.max(
+        ...chainLocationData.map((p) => p.chainLocationId)
+      );
+      addData.chainLocationId = maxLocationId + 1;
       setChainLocationData([...chainLocationData, addData]);
     }
   };
 
-  const handleCellEdited = (oldValue: any, newValue: any) => {
-    console.log(oldValue, newValue);
-  };
   const [editItemModalIsOpen, setEditItemModalOpen] = useState(false);
-  const handleEntityEditedSubmited = (config: {}) => {};
+
+  const handleEntityEditedSubmited = (
+    config: Partial<IRestaurantChainLocation>
+  ) => {
+    let data: IRestaurantChainLocation[] = [...chainLocationData];
+    let customerIndex = data?.findIndex(
+      (p) => p.chainLocationId === config?.chainLocationId
+    );
+    if (customerIndex === -1) {
+      return;
+    }
+    data[customerIndex] = {
+      ...data[customerIndex],
+      ...config,
+    };
+    setChainLocationData(data);
+  };
   const toggleEditItem = () => {
     setEditItemModalOpen(!editItemModalIsOpen);
   };
@@ -113,7 +139,6 @@ export default function RestaurantChainLocations() {
           keyField="chainLocationId"
           data={chainLocationData}
           columns={columns}
-          afterSaveCell={handleCellEdited}
         />
         <AddItemFormModalHelper
           handleAddEntitySubmited={handleAddEntitySubmited}
@@ -124,10 +149,11 @@ export default function RestaurantChainLocations() {
         />
         <EditItemFormModalHelper
           handleSubmit={handleEntityEditedSubmited}
-          formType={AddFormTypes.customer}
+          formType={AddFormTypes.restaurantChainLocation}
           title={"Edit a Restaurant Chain Location"}
           editItemModalIsOpen={editItemModalIsOpen}
           handleToggle={toggleEditItem}
+          data={editModalData}
         />
       </div>
     </Layout>

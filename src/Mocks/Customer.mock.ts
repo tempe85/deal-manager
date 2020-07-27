@@ -1,72 +1,65 @@
 import { ICustomer } from "../Interfaces";
-import { uniqueNamesGenerator, Config, names } from "unique-names-generator";
-
-const config: Config = {
-  dictionaries: [names],
-};
-
-const list: number[] = [1, 2, 3, 4, 5, 6, 7, 8, 9, 10];
 
 export const CustomerMockList = [
   {
     discountCardNumber: 1,
-    birthDate: "10/18/2003",
-    lastName: "Ted",
-    firstName: "Johnson",
+    birthDate: "2020-10-07",
+    firstName: "Ted",
+    lastName: "Johnson",
   },
   {
     discountCardNumber: 2,
-    birthDate: "9/10/2003",
-    lastName: "Kimberly",
-    firstName: "Rose",
+    birthDate: "2009-05-05",
+    firstName: "Kimberly",
+    lastName: "Rose",
   },
   {
     discountCardNumber: 3,
-    birthDate: "2/01/2004",
-    lastName: "Mike",
-    firstName: "Davis",
+    birthDate: "2011-10-15",
+    firstName: "Mike",
+    lastName: "Davis",
   },
   {
     discountCardNumber: 4,
-    birthDate: "10/15/2003",
+    birthDate: "2009-02-07",
     lastName: "Megan",
     firstName: "Harris",
   },
   {
     discountCardNumber: 5,
-    birthDate: "01/12/2003",
-    lastName: "John",
-    firstName: "Johnson",
+    birthDate: "2008-10-25",
+    firstName: "John",
+    lastName: "Johnson",
   },
   {
     discountCardNumber: 6,
-    birthDate: "02/05/2003",
-    lastName: "Zach",
-    firstName: "Tindell",
+    birthDate: "2005-12-05",
+    firstName: "Zach",
+    lastName: "Tindell",
   },
   {
     discountCardNumber: 7,
-    birthDate: "10/18/2003",
-    lastName: "Don",
-    firstName: "Dondell",
+    birthDate: "2001-10-01",
+    firstName: "Don",
+    lastName: "Dondell",
   },
   {
     discountCardNumber: 8,
-    birthDate: "10/18/2003",
-    lastName: "Paige",
-    firstName: "Pammery",
+    birthDate: "1990-01-22",
+    firstName: "Paige",
+    lastName: "Pammery",
   },
   {
     discountCardNumber: 9,
-    birthDate: "10/18/2003",
-    lastName: "Xavier",
-    firstName: "Zavier",
+    birthDate: "2000-11-05",
+    firstName: "Xavier",
+    lastName: "Zavier",
   },
   {
     discountCardNumber: 10,
-    birthDate: "10/18/2003",
-    lastName: "Maxwell",
-    firstName: "Flaxwell",
+    birthDate: "2003-10-05",
+    firstName: "Maxwell",
+    lastName: "Flaxwell",
   },
 ] as ICustomer[];
 

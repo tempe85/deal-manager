@@ -1,7 +1,7 @@
 import React from "react";
-import AddItemForm from "../../Components/Forms/AddItemForm";
 import { AddFormTypes } from "../../Enums";
 import EditItemFormModal from "../../Modals/EditItemFormModal";
+import EditItemForm from "../../Components/Forms/EditItemForm";
 
 interface IProps {
   editItemModalIsOpen: boolean;
@@ -9,6 +9,7 @@ interface IProps {
   handleSubmit: (config: any) => void;
   formType: AddFormTypes;
   title: string;
+  data?: any;
 }
 function EditItemFormModalHelper({
   editItemModalIsOpen,
@@ -16,6 +17,7 @@ function EditItemFormModalHelper({
   handleSubmit,
   formType,
   title,
+  data,
 }: IProps) {
   return (
     <>
@@ -24,13 +26,15 @@ function EditItemFormModalHelper({
           isOpen={editItemModalIsOpen}
           toggle={handleToggle}
           title={title}
+          data={data}
         >
-          {(toggle) => {
+          {(toggle, data) => {
             return (
-              <AddItemForm
+              <EditItemForm
                 toggleModal={toggle}
-                onAddSubmited={handleSubmit}
+                onEditSubmited={handleSubmit}
                 type={formType}
+                data={data}
               />
             );
           }}

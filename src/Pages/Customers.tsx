@@ -1,17 +1,17 @@
 import React, { useState } from "react";
 import Layout from "../Containers/Layout";
 import { textFilter } from "react-bootstrap-table2-filter";
-import CustomerMockList from "../Mocks/Customer.mock";
+import { MockDataContext } from "../Contexts/MockDataContext";
 import AddItem from "../Components/AddItem";
 import { AddFormTypes } from "../Enums";
 import { ICustomer } from "../Interfaces";
-import { IsObjectNullOrEmpty } from "../Utils";
+import { IsObjectNullOrEmpty, DateFormatter } from "../Utils";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import { faMinusCircle, faEdit } from "@fortawesome/free-solid-svg-icons";
 import DataEntityTable from "./Components/DataTable";
-import { Type } from "react-bootstrap-table2-editor";
 import AddItemFormModalHelper from "./Components/AddItemFormModalHelper";
 import EditItemFormModalHelper from "./Components/EditItemFormModalHelper";
+import { CustomerMockList } from "../Mocks";
 
 export default function Customers() {
   const columns = [
@@ -20,21 +20,19 @@ export default function Customers() {
       text: "Discount Card Number",
     },
     {
-      dataField: "lastName",
-      text: "Last Name",
-      filter: textFilter(),
-    },
-    {
       dataField: "firstName",
       text: "First Name",
       filter: textFilter(),
     },
     {
+      dataField: "lastName",
+      text: "Last Name",
+      filter: textFilter(),
+    },
+    {
       dataField: "birthDate",
       text: "Birth Day",
-      editor: {
-        type: Type.DATE,
-      },
+      formatter: (cell: any, row: ICustomer) => DateFormatter(row.birthDate),
     },
     {
       dataField: "df1",
@@ -68,14 +66,13 @@ export default function Customers() {
 
   const [addItemModalOpen, setAddItemModalOpen] = useState(false);
   const [editItemModalIsOpen, setEditItemModalOpen] = useState(false);
+  const [editModalData, setEditModalData] = useState<ICustomer | undefined>(
+    undefined
+  );
 
   const [customerData, setCustomerData] = useState<ICustomer[]>(
     CustomerMockList
   );
-
-  const handleEditCustomer = (row: ICustomer) => {
-    console.log(row);
-  };
 
   const handleAddItemToggle = () => {
     setAddItemModalOpen(!addItemModalOpen);
@@ -95,7 +92,20 @@ export default function Customers() {
     );
   };
 
-  const handleEntityEditedSubmited = (config: {}) => {};
+  const handleEntityEditedSubmited = (config: Partial<ICustomer>) => {
+    let data: ICustomer[] = [...customerData];
+    let customerIndex = data?.findIndex(
+      (p) => p.discountCardNumber === config?.discountCardNumber
+    );
+    if (customerIndex === -1) {
+      return;
+    }
+    data[customerIndex] = {
+      ...data[customerIndex],
+      ...config,
+    };
+    setCustomerData(data);
+  };
 
   const handleCustomerAddSubmited = (config: {}) => {
     const addCustomerData = { ...config } as ICustomer;
@@ -106,11 +116,8 @@ export default function Customers() {
     }
   };
 
-  const handleCellEdited = (oldValue: any, newValue: any) => {
-    console.log(oldValue, newValue);
-  };
-
   const openEditItem = (row: ICustomer) => {
+    setEditModalData(row);
     setEditItemModalOpen(true);
   };
 
@@ -127,7 +134,6 @@ export default function Customers() {
           keyField="discountCardNumber"
           data={customerData}
           columns={columns}
-          afterSaveCell={handleCellEdited}
         />
         <AddItemFormModalHelper
           handleAddEntitySubmited={handleCustomerAddSubmited}
@@ -142,6 +148,7 @@ export default function Customers() {
           title={"Edit a Customer"}
           editItemModalIsOpen={editItemModalIsOpen}
           handleToggle={toggleEditItem}
+          data={editModalData}
         />
       </div>
     </Layout>

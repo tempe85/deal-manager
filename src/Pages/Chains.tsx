@@ -33,20 +33,6 @@ export default function Deals() {
         />
       ),
     },
-    {
-      dataField: "df2",
-      isDummyField: true,
-      text: "Edit",
-      editable: false,
-      formatter: (cellContent: any, row: IRestaurantChain) => (
-        <FontAwesomeIcon
-          style={{ cursor: "pointer" }}
-          color="green"
-          icon={faEdit}
-          onClick={() => openEditItem(row)}
-        />
-      ),
-    },
   ];
 
   const openEditItem = (row: IRestaurantChain) => {
@@ -76,9 +62,7 @@ export default function Deals() {
       setChainData([...chainData, addData]);
     }
   };
-  const handleCellEdited = (oldValue: any, newValue: any) => {
-    console.log(oldValue, newValue);
-  };
+
   const [editItemModalIsOpen, setEditItemModalOpen] = useState(false);
   const handleEntityEditedSubmited = (config: {}) => {};
   const toggleEditItem = () => {
@@ -98,7 +82,6 @@ export default function Deals() {
           keyField="chainName"
           data={chainData}
           columns={columns}
-          afterSaveCell={handleCellEdited}
         />
         <AddItemFormModalHelper
           handleAddEntitySubmited={handleAddEntitySubmited}

@@ -10,26 +10,33 @@ import RestaurantChainLocationInputs from "./RestaurantChainLocationInputs";
 interface IProps {
   type: AddFormTypes;
   onConfigUpdated: (propName: string, value: number | string | Date) => void;
+  data?: any;
 }
-function AddItemInputs({ type, onConfigUpdated }: IProps) {
+function AddItemInputs({ type, onConfigUpdated, data }: IProps) {
   switch (type) {
     case AddFormTypes.customer:
-      return <CustomerInputs onConfigUpdated={onConfigUpdated} />;
+      return <CustomerInputs onConfigUpdated={onConfigUpdated} data={data} />;
     case AddFormTypes.deal:
-      return <DealInputs onConfigUpdated={onConfigUpdated} />;
+      return <DealInputs onConfigUpdated={onConfigUpdated} data={data} />;
     case AddFormTypes.customerRestaurantTransaction:
       return (
         <CustomerRestaurantTransactionInputs
           onConfigUpdated={onConfigUpdated}
+          data={data}
         />
       );
     case AddFormTypes.locationDeal:
-      return <LocationDealInputs onConfigUpdated={onConfigUpdated} />;
+      return (
+        <LocationDealInputs onConfigUpdated={onConfigUpdated} data={data} />
+      );
     case AddFormTypes.restaurantChain:
       return <RestaurantChainInputs onConfigUpdated={onConfigUpdated} />;
     case AddFormTypes.restaurantChainLocation:
       return (
-        <RestaurantChainLocationInputs onConfigUpdated={onConfigUpdated} />
+        <RestaurantChainLocationInputs
+          onConfigUpdated={onConfigUpdated}
+          data={data}
+        />
       );
     default:
       console.warn(`Invalid form type ${type}.`);

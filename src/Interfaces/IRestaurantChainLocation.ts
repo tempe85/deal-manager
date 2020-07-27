@@ -1,5 +1,6 @@
 export interface IRestaurantChainLocation {
   chainLocationId: number;
   chainName: string;
-  cityStateName: string;
+  city: string;
+  state: string;
 }

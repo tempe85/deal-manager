@@ -1,21 +1,14 @@
 import React from "react";
 import BootstrapTable from "react-bootstrap-table-next";
 import filterFactory from "react-bootstrap-table2-filter";
-import cellEditFactory from "react-bootstrap-table2-editor";
 
 interface IProps<T> {
   keyField: string;
   data: T[];
   columns: any[];
-  afterSaveCell: (oldValue: any, newValue: any) => void;
 }
 
-function DataEntityTable<T>({
-  keyField,
-  data,
-  columns,
-  afterSaveCell,
-}: IProps<T>) {
+function DataEntityTable<T>({ keyField, data, columns }: IProps<T>) {
   return (
     <BootstrapTable
       keyField={keyField}
@@ -24,10 +17,6 @@ function DataEntityTable<T>({
       filter={filterFactory()}
       bordered
       striped
-      cellEdit={cellEditFactory({
-        mode: "click",
-        afterSaveCell,
-      })}
     />
   );
 }

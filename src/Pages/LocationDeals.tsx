@@ -11,6 +11,13 @@ import { LocationDealsMock } from "../Mocks/LocationDeal.mock";
 import DataEntityTable from "./Components/DataTable";
 import AddItemFormModalHelper from "./Components/AddItemFormModalHelper";
 import EditItemFormModalHelper from "./Components/EditItemFormModalHelper";
+import { DealMockList, RestaurantChainLocationMock } from "../Mocks";
+import {
+  FormatterChainName,
+  FormatterCity,
+  FormatterState,
+  FormatterDeal,
+} from "../Utils/Formatters/Formatter";
 
 export default function LocationDeals() {
   const columns = [
@@ -20,9 +27,39 @@ export default function LocationDeals() {
       filter: textFilter(),
     },
     {
+      dataField: "dl1",
+      text: "Discount",
+      filter: textFilter(),
+      filterValue: FormatterDeal,
+      formatter: FormatterDeal,
+    },
+    {
       dataField: "chainLocationId",
       text: "Chain Location Id",
       filter: textFilter(),
+    },
+    {
+      dataField: "cl1",
+      text: "Chain Name",
+      filter: textFilter(),
+      filterValue: FormatterChainName,
+      formatter: FormatterChainName,
+    },
+    {
+      dataField: "cl2",
+      text: "City",
+      filter: textFilter(),
+      isDummyField: true,
+      filterValue: FormatterCity,
+      formatter: FormatterCity,
+    },
+    {
+      dataField: "cl3",
+      text: "State",
+      filter: textFilter(),
+      isDummyField: true,
+      filterValue: FormatterState,
+      formatter: FormatterState,
     },
     {
       dataField: "df1",
@@ -38,28 +75,10 @@ export default function LocationDeals() {
         />
       ),
     },
-    {
-      dataField: "df2",
-      isDummyField: true,
-      text: "Edit",
-      editable: false,
-      formatter: (cellContent: any, row: ILocationDeal) => (
-        <FontAwesomeIcon
-          style={{ cursor: "pointer" }}
-          color="green"
-          icon={faEdit}
-          onClick={() => openEditItem(row)}
-        />
-      ),
-    },
   ];
 
   const openEditItem = (row: ILocationDeal) => {
     setEditItemModalOpen(true);
-  };
-
-  const handleCellEdited = (oldValue: any, newValue: any) => {
-    console.log(oldValue, newValue);
   };
 
   const [addItemModalOpen, setAddItemModalOpen] = useState(false);
@@ -88,7 +107,9 @@ export default function LocationDeals() {
     }
   };
   const [editItemModalIsOpen, setEditItemModalOpen] = useState(false);
-  const handleEntityEditedSubmited = (config: {}) => {};
+
+  const handleEntityEditedSubmited = (config: Partial<ILocationDeal>) => {};
+
   const toggleEditItem = () => {
     setEditItemModalOpen(!editItemModalIsOpen);
   };
@@ -107,7 +128,6 @@ export default function LocationDeals() {
           keyField="dealId"
           data={dealLocationData}
           columns={columns}
-          afterSaveCell={handleCellEdited}
         />
         <AddItemFormModalHelper
           handleAddEntitySubmited={handleAddEntitySubmited}
