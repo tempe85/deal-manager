@@ -14,7 +14,7 @@ const CustomerInputs = ({ onConfigUpdated, data }: IProps) => {
   useEffect(() => {
     if (data) {
       setCustomerData(data);
-      onConfigUpdated("discountCardNumber", data?.discountCardNumber!);
+      onConfigUpdated("discount_card_number", data?.discount_card_number!);
     }
   }, [data]);
 
@@ -29,20 +29,20 @@ const CustomerInputs = ({ onConfigUpdated, data }: IProps) => {
       <FormGroup>
         {data && (
           <Label for="discountCard">
-            Discount Card Number: {customerData?.discountCardNumber}
+            Discount Card Number: {customerData?.discount_card_number}
           </Label>
         )}
         {!data && (
           <>
             <Label for="discountCard">Discount Card Number</Label>
             <Input
-              defaultValue={customerData?.discountCardNumber || ""}
+              defaultValue={customerData?.discount_card_number || ""}
               type="number"
               name="discountCard"
               id="discountCard"
               placeholder="E.g. 1, 2, 3..."
               onChange={(event) =>
-                onInputUpdated("discountCardNumber", +event.target.value)
+                onInputUpdated("discount_card_number", +event.target.value)
               }
             />
           </>
@@ -51,23 +51,23 @@ const CustomerInputs = ({ onConfigUpdated, data }: IProps) => {
       <FormGroup>
         <Label for="firstName">First Name</Label>
         <Input
-          defaultValue={customerData?.firstName || ""}
+          defaultValue={customerData?.first_name || ""}
           type="text"
           name="firstName"
           id="firstName"
           placeholder="Add Customer's First Name"
-          onChange={(event) => onInputUpdated("firstName", event.target.value)}
+          onChange={(event) => onInputUpdated("first_name", event.target.value)}
         />
       </FormGroup>
       <FormGroup>
         <Label for="lastName">Last Name</Label>
         <Input
-          defaultValue={customerData?.lastName || ""}
+          defaultValue={customerData?.last_name || ""}
           type="text"
           name="lastName"
           id="lastName"
           placeholder="Add Customer's Last Name"
-          onChange={(event) => onInputUpdated("lastName", event.target.value)}
+          onChange={(event) => onInputUpdated("last_name", event.target.value)}
         />
       </FormGroup>
       <FormGroup>
@@ -76,8 +76,8 @@ const CustomerInputs = ({ onConfigUpdated, data }: IProps) => {
           type="date"
           name="birthDay"
           id="birthDay"
-          defaultValue={customerData?.birthDate || ""}
-          onChange={(event) => onInputUpdated("birthDate", event.target.value)}
+          defaultValue={customerData?.birth_date || ""}
+          onChange={(event) => onInputUpdated("birth_date", event.target.value)}
         />
       </FormGroup>
     </>

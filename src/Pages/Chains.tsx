@@ -15,7 +15,7 @@ import EditItemFormModalHelper from "./Components/EditItemFormModalHelper";
 export default function Deals() {
   const columns = [
     {
-      dataField: "chainName",
+      dataField: "chain_name",
       text: "Restaurant Chain Name",
       filter: textFilter(),
     },
@@ -48,9 +48,9 @@ export default function Deals() {
   const handleOpenAddItemModal = () => {
     setAddItemModalOpen(true);
   };
-  const handleRemoveEntity = (chainName: IRestaurantChain) => {
+  const handleRemoveEntity = (restaurantChain: IRestaurantChain) => {
     setChainData(
-      chainData.filter((p) => !(p.chainName === chainName.chainName))
+      chainData.filter((p) => !(p.chain_name === restaurantChain.chain_name))
     );
   };
 
@@ -79,7 +79,7 @@ export default function Deals() {
           />
         </div>
         <DataEntityTable
-          keyField="chainName"
+          keyField="chain_name"
           data={chainData}
           columns={columns}
         />

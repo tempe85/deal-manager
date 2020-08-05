@@ -4,3 +4,6 @@ export type { IDeal } from "./IDeal";
 export type { IRestaurantChain } from "./IRestaurantChain";
 export type { ICustomerRestaurantTransaction } from "./ICustomerRestaurantTransaction";
 export type { IRestaurantChainLocation } from "./IRestaurantChainLocation";
+export type { IAddApiResponse } from "./IAddApiResponse";
+export type { ITransactionRequest } from "./ITransactionRequest";
+export type { ICustomerSelection } from "./ICustomerSelection";

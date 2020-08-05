@@ -18,13 +18,15 @@ const DealInputs = ({ onConfigUpdated, data }: IProps) => {
   useEffect(() => {
     if (data) {
       setDealData(data);
-      onConfigUpdated("dealId", data?.dealId!);
+      onConfigUpdated("deal_id", data?.deal_id!);
     }
   }, [data]);
+
+  
   return (
     <>
       <FormGroup>
-        {data && <Label for="discountCard">Deal Id: {dealData?.dealId}</Label>}
+        {data && <Label for="discountCard">Deal Id: {dealData?.deal_id}</Label>}
       </FormGroup>
       <FormGroup>
         <Label for="percentDiscount">Percent Discount</Label>
@@ -33,9 +35,9 @@ const DealInputs = ({ onConfigUpdated, data }: IProps) => {
           name="percentDiscount"
           id="percentDiscount"
           placeholder="E.g. 1, 2, 3..."
-          defaultValue={dealData?.percentDiscount || ""}
+          defaultValue={dealData?.percent_discount || ""}
           onChange={(event) =>
-            onInputUpdated("percentDiscount", +event.target.value)
+            onInputUpdated("percent_discount", +event.target.value)
           }
         />
       </FormGroup>

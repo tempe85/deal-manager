@@ -17,10 +17,14 @@ function AddItemForm({ toggleModal, type, onAddSubmited }: IProps) {
 
   const [config, setConfig] = useState<{}>();
 
-  const onConfigUpdated = (propName: string, value: number | string | Date) => {
+  const onConfigUpdated = (propName: string, value: {}) => {
+    const test = {
+      ...config,
+      ...value,
+    };
     setConfig({
       ...config,
-      [propName]: value,
+      ...value,
     });
   };
 

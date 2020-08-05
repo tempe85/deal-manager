@@ -2,44 +2,44 @@ import { ILocationDeal } from "../Interfaces";
 
 export const LocationDealsMock: ILocationDeal[] = [
   {
-    dealId: 1,
-    chainLocationId: 1001,
+    deal_id: 1,
+    chain_location_id: 1001,
   },
   {
-    dealId: 2,
-    chainLocationId: 1000,
+    deal_id: 2,
+    chain_location_id: 1000,
   },
   {
-    dealId: 3,
-    chainLocationId: 1002,
+    deal_id: 3,
+    chain_location_id: 1002,
   },
   {
-    dealId: 4,
-    chainLocationId: 1005,
+    deal_id: 4,
+    chain_location_id: 1005,
   },
   {
-    dealId: 5,
-    chainLocationId: 1000,
+    deal_id: 5,
+    chain_location_id: 1000,
   },
   {
-    dealId: 6,
-    chainLocationId: 1004,
+    deal_id: 6,
+    chain_location_id: 1004,
   },
   {
-    dealId: 7,
-    chainLocationId: 1007,
+    deal_id: 7,
+    chain_location_id: 1007,
   },
   {
-    dealId: 8,
-    chainLocationId: 1009,
+    deal_id: 8,
+    chain_location_id: 1009,
   },
   {
-    dealId: 9,
-    chainLocationId: 1006,
+    deal_id: 9,
+    chain_location_id: 1006,
   },
   {
-    dealId: 10,
-    chainLocationId: 1008,
+    deal_id: 10,
+    chain_location_id: 1008,
   },
 ];
 

@@ -3,6 +3,6 @@ import { ChainNameList } from "./Helpers/ChainNameList";
 
 export const ChainMockList = ChainNameList.map((name: string) => {
   return {
-    chainName: name,
+    chain_name: name,
   };
 }) as IRestaurantChain[];

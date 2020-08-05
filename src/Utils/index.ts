@@ -16,3 +16,7 @@ export const IsObjectNullOrEmpty = (obj: object) => {
 export const DateFormatter = (date: string | Date) => {
   return moment(date).format("l");
 };
+
+export const GetDateInputFormat = (date: string | Date) => {
+  return moment(date).format("YYYY-MM-DD");
+};

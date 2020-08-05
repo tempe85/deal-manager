@@ -5,6 +5,8 @@ import CssBaseline from "@material-ui/core/CssBaseline";
 import AppBar from "@material-ui/core/AppBar";
 import Sidebar from "../Components/Sidebar";
 import AppToolbar from "../Components/AppToolbar";
+import { ToastContainer } from "react-toastify";
+import "react-toastify/dist/ReactToastify.css";
 
 const drawerWidth = 240;
 
@@ -67,6 +69,7 @@ export default function Layout(props: IProps) {
         <div className={classes.appBarSpacer} />
         {props.children}
       </main>
+      <ToastContainer position="bottom-left" />
     </div>
   );
 }

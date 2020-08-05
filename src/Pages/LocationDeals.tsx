@@ -22,21 +22,11 @@ import {
 export default function LocationDeals() {
   const columns = [
     {
-      dataField: "dealId",
-      text: "Deal Id",
-      filter: textFilter(),
-    },
-    {
       dataField: "dl1",
       text: "Discount",
       filter: textFilter(),
       filterValue: FormatterDeal,
       formatter: FormatterDeal,
-    },
-    {
-      dataField: "chainLocationId",
-      text: "Chain Location Id",
-      filter: textFilter(),
     },
     {
       dataField: "cl1",
@@ -94,7 +84,7 @@ export default function LocationDeals() {
   };
   const handleRemoveEntity = (deal: ILocationDeal) => {
     setDealLocationData(
-      dealLocationData.filter((p) => !(p.dealId === deal.dealId))
+      dealLocationData.filter((p) => !(p.deal_id === deal.deal_id))
     );
   };
 
@@ -125,7 +115,7 @@ export default function LocationDeals() {
           />
         </div>
         <DataEntityTable
-          keyField="dealId"
+          keyField="deal_id"
           data={dealLocationData}
           columns={columns}
         />

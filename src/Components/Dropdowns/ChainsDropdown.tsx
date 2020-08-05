@@ -23,8 +23,8 @@ function ChainsDropdown({ onChange, defaultValue }: IProps) {
     let selections: ISelect[] = [];
     ChainMockList.forEach((p) => {
       selections.push({
-        value: p.chainName,
-        label: p.chainName,
+        value: { chain_name: p.chain_name },
+        label: p.chain_name,
       });
     });
     return selections;

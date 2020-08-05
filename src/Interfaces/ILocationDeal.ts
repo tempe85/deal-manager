@@ -1,4 +1,4 @@
 export interface ILocationDeal {
-  dealId: number;
-  chainLocationId: number;
+  deal_id: number;
+  chain_location_id: number;
 }

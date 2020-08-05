@@ -6,10 +6,10 @@ import { GenerateRandomNDigitNumber } from "../Utils";
 export const RestaurantChainLocationMock = ChainNameList.map(
   (value: string, index: number) => {
     return {
-      chainLocationId: 1000 + index,
-      discountCardNumber: GenerateRandomNDigitNumber(5),
-      dealId: GenerateRandomNDigitNumber(4),
-      chainName: value,
+      chain_location_id: 1000 + index,
+      discount_card_number: GenerateRandomNDigitNumber(5),
+      deal_id: GenerateRandomNDigitNumber(4),
+      chain_name: value,
       city: `${cityNames[index]}`,
       state: "WA",
     };

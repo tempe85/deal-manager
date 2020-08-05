@@ -15,12 +15,7 @@ import EditItemFormModalHelper from "./Components/EditItemFormModalHelper";
 export default function RestaurantChainLocations() {
   const columns = [
     {
-      dataField: "chainLocationId",
-      text: "Chain Location Id",
-      filter: textFilter(),
-    },
-    {
-      dataField: "chainName",
+      dataField: "chain_name",
       text: "Chain Name",
       filter: textFilter(),
     },
@@ -86,7 +81,7 @@ export default function RestaurantChainLocations() {
   const handleRemoveEntity = (deal: IRestaurantChainLocation) => {
     setChainLocationData(
       chainLocationData.filter(
-        (p) => !(p.chainLocationId === deal.chainLocationId)
+        (p) => !(p.chain_location_id === deal.chain_location_id)
       )
     );
   };
@@ -97,9 +92,9 @@ export default function RestaurantChainLocations() {
       return;
     } else {
       const maxLocationId = Math.max(
-        ...chainLocationData.map((p) => p.chainLocationId)
+        ...chainLocationData.map((p) => p.chain_location_id)
       );
-      addData.chainLocationId = maxLocationId + 1;
+      addData.chain_location_id = maxLocationId + 1;
       setChainLocationData([...chainLocationData, addData]);
     }
   };
@@ -111,8 +106,9 @@ export default function RestaurantChainLocations() {
   ) => {
     let data: IRestaurantChainLocation[] = [...chainLocationData];
     let customerIndex = data?.findIndex(
-      (p) => p.chainLocationId === config?.chainLocationId
+      (p) => p.chain_location_id === config?.chain_location_id
     );
+    console.log("config", config, "data", data);
     if (customerIndex === -1) {
       return;
     }
@@ -136,7 +132,7 @@ export default function RestaurantChainLocations() {
           />
         </div>
         <DataEntityTable
-          keyField="chainLocationId"
+          keyField="chain_location_id"
           data={chainLocationData}
           columns={columns}
         />

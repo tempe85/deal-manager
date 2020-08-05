@@ -23,7 +23,7 @@ const RestaurantChainLocationInputs = ({ onConfigUpdated, data }: IProps) => {
   useEffect(() => {
     if (data) {
       setLocationData(data);
-      onConfigUpdated("chainLocationId", data?.chainLocationId!);
+      onConfigUpdated("chain_location_id", data?.chain_location_id!);
     }
   }, [data]);
 
@@ -32,17 +32,17 @@ const RestaurantChainLocationInputs = ({ onConfigUpdated, data }: IProps) => {
       <FormGroup>
         {data && (
           <Label for="chainLocationId">
-            Chain Location Id: {locationData?.chainLocationId}
+            Chain Location Id: {locationData?.chain_location_id}
           </Label>
         )}
       </FormGroup>
       <FormGroup>
         <Label for="chainName">Restaurant Chain Name</Label>
         <ChainsDropdown
-          onChange={(returnValue) => onInputUpdated("chainName", returnValue)}
+          onChange={(returnValue) => onInputUpdated("chain_name", returnValue)}
           defaultValue={
             data
-              ? ChainSelections().filter((p) => p.value === data?.chainName)[0]
+              ? ChainSelections().filter((p) => p.value === data?.chain_name)[0]
               : undefined
           }
         />

@@ -22,7 +22,7 @@ const RestaurantChainInputs = ({ onConfigUpdated }: IProps) => {
           name="restaurantChain"
           id="restaurantChain"
           placeholder="Add Restaurant Chain Name"
-          onChange={(event) => onInputUpdated("chainName", event.target.value)}
+          onChange={(event) => onInputUpdated("chain_name", event.target.value)}
         />
       </FormGroup>
     </>

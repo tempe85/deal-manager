@@ -9,7 +9,7 @@ import RestaurantChainLocationInputs from "./RestaurantChainLocationInputs";
 
 interface IProps {
   type: AddFormTypes;
-  onConfigUpdated: (propName: string, value: number | string | Date) => void;
+  onConfigUpdated: (propName: string, value: {}) => void;
   data?: any;
 }
 function AddItemInputs({ type, onConfigUpdated, data }: IProps) {

@@ -2,44 +2,44 @@ import { IDeal } from "../Interfaces";
 
 export const DealMockList: IDeal[] = [
   {
-    dealId: 1,
-    percentDiscount: 50,
+    deal_id: 1,
+    percent_discount: 50,
   },
   {
-    dealId: 2,
-    percentDiscount: 25,
+    deal_id: 2,
+    percent_discount: 25,
   },
   {
-    dealId: 3,
-    percentDiscount: 33,
+    deal_id: 3,
+    percent_discount: 33,
   },
   {
-    dealId: 4,
-    percentDiscount: 40,
+    deal_id: 4,
+    percent_discount: 40,
   },
   {
-    dealId: 5,
-    percentDiscount: 45,
+    deal_id: 5,
+    percent_discount: 45,
   },
   {
-    dealId: 6,
-    percentDiscount: 90,
+    deal_id: 6,
+    percent_discount: 90,
   },
   {
-    dealId: 7,
-    percentDiscount: 10,
+    deal_id: 7,
+    percent_discount: 10,
   },
   {
-    dealId: 8,
-    percentDiscount: 15,
+    deal_id: 8,
+    percent_discount: 15,
   },
   {
-    dealId: 9,
-    percentDiscount: 12,
+    deal_id: 9,
+    percent_discount: 12,
   },
   {
-    dealId: 10,
-    percentDiscount: 13,
+    deal_id: 10,
+    percent_discount: 13,
   },
 ];
 

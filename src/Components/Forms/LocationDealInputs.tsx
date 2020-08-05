@@ -1,11 +1,8 @@
 import React from "react";
-import { FormGroup, Label, Input } from "reactstrap";
+import { FormGroup, Label } from "reactstrap";
 import { ILocationDeal } from "../../Interfaces";
 import DealDropdown from "../Dropdowns/DealDropdown";
-import {
-  DealSelections,
-  ChainLocationSelections,
-} from "../Selections/Selections";
+import { GetDealSelectionsAsync } from "../Selections/Selections";
 import ChainLocationDropDown from "../Dropdowns/ChainLocationDropdown";
 
 interface IProps {
@@ -25,28 +22,14 @@ const LocationDealInputs = ({ onConfigUpdated, data }: IProps) => {
       <FormGroup>
         <Label for="dealId">Deal Id</Label>
         <DealDropdown
-          onChange={(returnValue) => onInputUpdated("dealId", +returnValue)}
-          defaultValue={
-            data
-              ? DealSelections().filter(
-                  (p) => p.value === data?.dealId.toString()
-                )[0]
-              : undefined
-          }
+          onChange={(returnValue) => onInputUpdated("deal_id", +returnValue)}
         />
       </FormGroup>
       <FormGroup>
         <Label for="chainLocationId">Chain Location Id</Label>
         <ChainLocationDropDown
           onChange={(returnValue) =>
-            onInputUpdated("chainLocationId", +returnValue)
-          }
-          defaultValue={
-            data
-              ? ChainLocationSelections().filter(
-                  (p) => p.value === data?.chainLocationId.toString()
-                )[0]
-              : undefined
+            onInputUpdated("chain_location_id", +returnValue)
           }
         />
       </FormGroup>

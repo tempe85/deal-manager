@@ -16,23 +16,23 @@ import { CustomerMockList } from "../Mocks";
 export default function Customers() {
   const columns = [
     {
-      dataField: "discountCardNumber",
+      dataField: "discount_card_number",
       text: "Discount Card Number",
     },
     {
-      dataField: "firstName",
+      dataField: "first_name",
       text: "First Name",
       filter: textFilter(),
     },
     {
-      dataField: "lastName",
+      dataField: "last_name",
       text: "Last Name",
       filter: textFilter(),
     },
     {
-      dataField: "birthDate",
+      dataField: "birth_date",
       text: "Birth Day",
-      formatter: (cell: any, row: ICustomer) => DateFormatter(row.birthDate),
+      formatter: (cell: any, row: ICustomer) => DateFormatter(row.birth_date),
     },
     {
       dataField: "df1",
@@ -87,7 +87,7 @@ export default function Customers() {
   const handleRemoveCustomer = (customer: ICustomer) => {
     setCustomerData(
       customerData.filter(
-        (p) => !(p.discountCardNumber === customer.discountCardNumber)
+        (p) => !(p.discount_card_number === customer.discount_card_number)
       )
     );
   };
@@ -95,7 +95,7 @@ export default function Customers() {
   const handleEntityEditedSubmited = (config: Partial<ICustomer>) => {
     let data: ICustomer[] = [...customerData];
     let customerIndex = data?.findIndex(
-      (p) => p.discountCardNumber === config?.discountCardNumber
+      (p) => p.discount_card_number === config?.discount_card_number
     );
     if (customerIndex === -1) {
       return;
@@ -131,7 +131,7 @@ export default function Customers() {
           />
         </div>
         <DataEntityTable
-          keyField="discountCardNumber"
+          keyField="discount_card_number"
           data={customerData}
           columns={columns}
         />

@@ -9,16 +9,16 @@ export const FormatterChainName = (
   row: ICustomerRestaurantTransaction | ILocationDeal
 ) => {
   const chainLocationEntry = RestaurantChainLocationMock.filter(
-    (p) => p.chainLocationId === row.chainLocationId
+    (p) => p.chain_location_id === row.chain_location_id
   )[0];
-  return chainLocationEntry.chainName;
+  return chainLocationEntry.chain_name;
 };
 export const FormatterCity = (
   cell: any,
   row: ICustomerRestaurantTransaction | ILocationDeal
 ) => {
   const chainLocationEntry = RestaurantChainLocationMock.filter(
-    (p) => p.chainLocationId === row.chainLocationId
+    (p) => p.chain_location_id === row.chain_location_id
   )[0];
   return chainLocationEntry.city;
 };
@@ -27,7 +27,7 @@ export const FormatterState = (
   row: ICustomerRestaurantTransaction | ILocationDeal
 ) => {
   const chainLocationEntry = RestaurantChainLocationMock.filter(
-    (p) => p.chainLocationId === row.chainLocationId
+    (p) => p.chain_location_id === row.chain_location_id
   )[0];
   return chainLocationEntry.state;
 };
@@ -36,6 +36,6 @@ export const FormatterDeal = (
   cell: any,
   row: ICustomerRestaurantTransaction | ILocationDeal
 ) => {
-  const entry = DealMockList.filter((p) => p.dealId === row.dealId)[0];
-  return `${entry.percentDiscount}%`;
+  const entry = DealMockList.filter((p) => p.deal_id === row.deal_id)[0];
+  return `${entry.percent_discount}%`;
 };

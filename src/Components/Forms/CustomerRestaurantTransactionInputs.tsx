@@ -4,14 +4,11 @@ import { ICustomerRestaurantTransaction } from "../../Interfaces";
 import CustomerDropdown from "../Dropdowns/CustomerDropdown";
 import ChainLocationDropDown from "../Dropdowns/ChainLocationDropdown";
 import DealDropdown from "../Dropdowns/DealDropdown";
-import {
-  CustomerSelections,
-  ChainLocationSelections,
-  DealSelections,
-} from "../Selections/Selections";
+import { DateFormatter, GetDateInputFormat } from "../../Utils";
+import { ISelect } from "../../Interfaces/ISelect";
 
 interface IProps {
-  onConfigUpdated: (propName: string, value: number | string | Date) => void;
+  onConfigUpdated: (propName: string, value: {}) => void;
   data?: any;
 }
 
@@ -22,16 +19,17 @@ const CustomerRestaurantTransactionInputs = ({
   const [transactionData, setTransactionData] = useState<
     ICustomerRestaurantTransaction | undefined
   >(undefined);
+
   useEffect(() => {
     if (data) {
       setTransactionData(data);
-      onConfigUpdated("transactionId", data?.transactionId!);
+      onConfigUpdated("transaction_id", data?.transactionId!);
     }
   }, [data]);
 
   const onInputUpdated = (
     inputName: keyof ICustomerRestaurantTransaction,
-    value: number | string | Date
+    value: {}
   ) => {
     onConfigUpdated(inputName, value);
   };
@@ -39,50 +37,32 @@ const CustomerRestaurantTransactionInputs = ({
     <>
       {data && (
         <Label for="discountCard">
-          Transaction Id: {transactionData?.transactionId}
+          Transaction Id: {transactionData?.transaction_id}
         </Label>
       )}
       <FormGroup>
         <Label for="discountCardNumber">Discount Card Number</Label>
         <CustomerDropdown
           onChange={(returnValue) => {
-            onInputUpdated("discountCardNumber", +returnValue);
+            onInputUpdated("discount_card_number", returnValue);
           }}
-          defaultValue={
-            data
-              ? CustomerSelections().filter(
-                  (p) => p.value === data?.discountCardNumber.toString()
-                )[0]
-              : undefined
-          }
+          defaultValue={data?.discount_card_number}
         />
       </FormGroup>
       <FormGroup>
         <Label for="chainLocationId">Chain Location Id</Label>
         <ChainLocationDropDown
           onChange={(returnValue) =>
-            onInputUpdated("chainLocationId", +returnValue)
+            onInputUpdated("chain_location_id", returnValue)
           }
-          defaultValue={
-            data
-              ? ChainLocationSelections().filter(
-                  (p) => p.value === data?.chainLocationId.toString()
-                )[0]
-              : undefined
-          }
+          defaultValue={data?.chain_location_id}
         />
       </FormGroup>
       <FormGroup>
         <Label for="dealId">Deal Id</Label>
         <DealDropdown
-          onChange={(returnValue) => onInputUpdated("dealId", +returnValue)}
-          defaultValue={
-            data
-              ? DealSelections().filter(
-                  (p) => p.value === data?.dealId.toString()
-                )[0]
-              : undefined
-          }
+          onChange={(returnValue) => onInputUpdated("deal_id", returnValue)}
+          defaultValue={data?.deal_id}
         />
       </FormGroup>
       <FormGroup>
@@ -90,9 +70,15 @@ const CustomerRestaurantTransactionInputs = ({
         <Input
           type="date"
           name="date"
-          defaultValue={transactionData?.date || ""}
+          defaultValue={
+            transactionData?.date
+              ? GetDateInputFormat(transactionData.date)
+              : ""
+          }
           id="date"
-          onChange={(event) => onInputUpdated("date", event.target.value)}
+          onChange={(event) =>
+            onInputUpdated("date", { date: event.target.value })
+          }
         />
       </FormGroup>
     </>

@@ -1,6 +1,6 @@
 export interface ICustomer {
-  discountCardNumber: number;
-  lastName: string;
-  firstName: string;
-  birthDate: string;
+  discount_card_number: number;
+  last_name: string;
+  first_name: string;
+  birth_date: string;
 }

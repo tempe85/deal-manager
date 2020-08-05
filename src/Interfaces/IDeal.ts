@@ -1,4 +1,4 @@
 export interface IDeal {
-  dealId: number;
-  percentDiscount: number;
+  deal_id: number;
+  percent_discount: number;
 }

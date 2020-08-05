@@ -1,41 +1,49 @@
 import React, { useState, useEffect } from "react";
-import { DealMockList } from "../../Mocks";
 import Select from "react-select";
 import { ISelect } from "../../Interfaces/ISelect";
+import { GetDealSelectionsAsync } from "../Selections/Selections";
 
 interface IProps {
-  onChange: (value: string) => void;
-  defaultValue?: ISelect | undefined;
+  onChange: (value: {}) => void;
+  defaultValue?: number | undefined;
 }
 
 function DealDropdown({ onChange, defaultValue }: IProps) {
   const [selections, setSelections] = useState<ISelect[]>();
 
   useEffect(() => {
-    const selections = getSelections();
-    setSelections(selections);
+    const fetchDealSelections = async () => {
+      const dealSelections = await GetDealSelectionsAsync();
+      setSelections(dealSelections);
+    };
+    fetchDealSelections();
   }, []);
 
   const onInputUpdated = (selection: any) => {
     onChange(selection.value);
   };
-  const getSelections = (): ISelect[] => {
-    let selections: ISelect[] = [];
-    DealMockList.forEach((p) => {
-      selections.push({
-        value: p.dealId.toString(),
-        label: `${p.dealId}: ${p.percentDiscount}%`,
-      });
-    });
-    return selections;
+
+  const getDefaultValue = (): ISelect | undefined => {
+    if (!selections || defaultValue === undefined) {
+      return;
+    }
+    const index = selections.findIndex(
+      (p) => p.value?.deal_id === defaultValue
+    );
+    if (index === -1) return;
+    return selections[index];
   };
 
-  return (
+  return defaultValue === undefined ? (
+    <Select options={selections} onChange={onInputUpdated} />
+  ) : selections ? (
     <Select
-      defaultValue={defaultValue}
+      defaultValue={getDefaultValue()}
       options={selections}
       onChange={onInputUpdated}
     />
+  ) : (
+    <></>
   );
 }
 

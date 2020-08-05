@@ -1,3 +1,3 @@
 export interface IRestaurantChain {
-  chainName: string;
+  chain_name: string;
 }
