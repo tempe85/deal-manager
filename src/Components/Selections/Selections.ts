@@ -1,10 +1,11 @@
 import { ChainMockList } from "../../Mocks";
 import { ISelect } from "../../Interfaces/ISelect";
-import { ICustomerSelection, IDeal } from "../../Interfaces";
+import { ICustomerSelection, IDeal, IRestaurantChain } from "../../Interfaces";
 import {
   getCustomerSelections,
   getChainLocationSelections,
   getDeals,
+  getChains,
 } from "../../API/Api";
 import { IChainLocationSelection } from "../../Interfaces/IChainLocationSelection";
 import { toast } from "react-toastify";
@@ -75,13 +76,19 @@ export const GetDealSelectionsAsync = async (): Promise<ISelect[]> => {
   }
 };
 
-export const ChainSelections = (): ISelect[] => {
-  let selections: ISelect[] = [];
-  ChainMockList.forEach((p) => {
-    selections.push({
-      value: { chain_name: p.chain_name },
-      label: p.chain_name,
+export const GetChainSelectionsAsync = async (): Promise<ISelect[]> => {
+  let chainSelections: IRestaurantChain[] = [];
+  try {
+    chainSelections = await getChains();
+    let selections: ISelect[] = [];
+    chainSelections.forEach((p) => {
+      selections.push({
+        value: { chain_name: p.chain_name },
+        label: p.chain_name,
+      });
     });
-  });
-  return selections;
+    return selections;
+  } catch (error) {
+    return Promise.reject(error);
+  }
 };

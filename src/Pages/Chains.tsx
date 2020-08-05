@@ -1,4 +1,4 @@
-import React, { useState } from "react";
+import React, { useState, useEffect } from "react";
 import Layout from "../Containers/Layout";
 import { textFilter } from "react-bootstrap-table2-filter";
 import AddItem from "../Components/AddItem";
@@ -6,13 +6,38 @@ import { AddFormTypes } from "../Enums";
 import { IRestaurantChain } from "../Interfaces";
 import { IsObjectNullOrEmpty } from "../Utils";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
-import { faMinusCircle, faEdit } from "@fortawesome/free-solid-svg-icons";
+import { faMinusCircle } from "@fortawesome/free-solid-svg-icons";
 import { ChainMockList } from "../Mocks/Chains.mock";
 import DataEntityTable from "./Components/DataTable";
 import AddItemFormModalHelper from "./Components/AddItemFormModalHelper";
-import EditItemFormModalHelper from "./Components/EditItemFormModalHelper";
+import { getChains, deleteChainRequest, addChainRequest } from "../API/Api";
+import { toast } from "react-toastify";
+import Loading from "./Components/Loading";
 
-export default function Deals() {
+export default function Chains() {
+  const [isLoading, setIsLoading] = useState(false);
+  useEffect(() => {
+    //Triggers fetchChains
+    setIsLoading(true);
+  }, []);
+
+  useEffect(() => {
+    if (isLoading) {
+      fetchChains();
+    }
+  }, [isLoading]);
+
+  const fetchChains = async () => {
+    try {
+      const chains = await getChains();
+      setChainData(chains);
+      setIsLoading(false);
+    } catch (error) {
+      toast.error(`Unable to fetch chains. ${error}`);
+      setIsLoading(false);
+    }
+  };
+
   const columns = [
     {
       dataField: "chain_name",
@@ -29,16 +54,11 @@ export default function Deals() {
           style={{ cursor: "pointer" }}
           color="red"
           icon={faMinusCircle}
-          onClick={() => handleRemoveEntity(row)}
+          onClick={() => deleteChain(row)}
         />
       ),
     },
   ];
-
-  const openEditItem = (row: IRestaurantChain) => {
-    setEditItemModalOpen(true);
-  };
-
   const [addItemModalOpen, setAddItemModalOpen] = useState(false);
   const [chainData, setChainData] = useState<IRestaurantChain[]>(ChainMockList);
 
@@ -48,25 +68,53 @@ export default function Deals() {
   const handleOpenAddItemModal = () => {
     setAddItemModalOpen(true);
   };
-  const handleRemoveEntity = (restaurantChain: IRestaurantChain) => {
-    setChainData(
-      chainData.filter((p) => !(p.chain_name === restaurantChain.chain_name))
-    );
-  };
 
-  const handleAddEntitySubmited = (config: {}) => {
-    const addData = { ...config } as IRestaurantChain;
-    if (IsObjectNullOrEmpty(addData)) {
-      return;
-    } else {
-      setChainData([...chainData, addData]);
+  const deleteChain = async (restaurantChain: IRestaurantChain) => {
+    console.log(restaurantChain);
+    const { chain_name } = restaurantChain;
+    try {
+      const response = await deleteChainRequest(chain_name);
+      if (response.affectedRows <= 0) {
+        toast.error(
+          `Error deleting ${chain_name}. Zero rows were updated in query`
+        );
+        return;
+      }
+      setIsLoading(true);
+      toast.success(`Deleted chain ${chain_name}!`);
+    } catch (error) {
+      toast.error(`Error deleting ${chain_name}: ${error}`, {
+        autoClose: false,
+      });
     }
   };
 
-  const [editItemModalIsOpen, setEditItemModalOpen] = useState(false);
-  const handleEntityEditedSubmited = (config: {}) => {};
-  const toggleEditItem = () => {
-    setEditItemModalOpen(!editItemModalIsOpen);
+  const handleAddEntitySubmited = async (config: Partial<IRestaurantChain>) => {
+    console.log("config", config);
+    const addData = { ...config } as IRestaurantChain;
+    if (IsObjectNullOrEmpty(addData) || !config.chain_name) {
+      toast.error(`Unable to add Chain. Chain has no data`, {
+        autoClose: false,
+      });
+      return;
+    } else {
+      await addChain(config.chain_name);
+    }
+  };
+
+  const addChain = async (chainName: string) => {
+    try {
+      const response = await addChainRequest(chainName);
+      if (response.affectedRows <= 0) {
+        toast.error(`Unable to add chain, 0 rows were updated in query`);
+      }
+      setChainData([...chainData, { chain_name: chainName }]);
+      toast.success(`Added chain ${chainName}!`);
+    } catch (error) {
+      toast.error(`Unable to add chain: ${error}`, {
+        autoClose: false,
+      });
+    }
   };
 
   return (
@@ -78,24 +126,21 @@ export default function Deals() {
             title={"Add new Restaurant Chain"}
           />
         </div>
-        <DataEntityTable
-          keyField="chain_name"
-          data={chainData}
-          columns={columns}
-        />
+        <Loading isLoading={isLoading}>
+          {chainData && (
+            <DataEntityTable
+              keyField="chain_name"
+              data={chainData}
+              columns={columns}
+            />
+          )}
+        </Loading>
         <AddItemFormModalHelper
           handleAddEntitySubmited={handleAddEntitySubmited}
           formType={AddFormTypes.restaurantChain}
           handleAddItemToggle={handleAddItemToggle}
           addItemModalOpen={addItemModalOpen}
           title={"Add a New Restaurant Chain"}
-        />
-        <EditItemFormModalHelper
-          handleSubmit={handleEntityEditedSubmited}
-          formType={AddFormTypes.customer}
-          title={"Edit a Restaurant Chain"}
-          editItemModalIsOpen={editItemModalIsOpen}
-          handleToggle={toggleEditItem}
         />
       </div>
     </Layout>

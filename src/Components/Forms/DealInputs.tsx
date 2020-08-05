@@ -3,26 +3,22 @@ import { FormGroup, Label, Input } from "reactstrap";
 import { IDeal } from "../../Interfaces";
 
 interface IProps {
-  onConfigUpdated: (propName: string, value: number | string | Date) => void;
+  onConfigUpdated: (value: { [key: string]: number }) => void;
   data?: any;
 }
 
 const DealInputs = ({ onConfigUpdated, data }: IProps) => {
-  const onInputUpdated = (
-    inputName: keyof IDeal,
-    value: number | string | Date
-  ) => {
-    onConfigUpdated(inputName, value);
+  const onInputUpdated = (value: { [key: string]: number }) => {
+    onConfigUpdated(value);
   };
   const [dealData, setDealData] = useState<IDeal | undefined>(undefined);
   useEffect(() => {
     if (data) {
       setDealData(data);
-      onConfigUpdated("deal_id", data?.deal_id!);
+      onConfigUpdated({deal_id: data?.deal_id});
     }
   }, [data]);
 
-  
   return (
     <>
       <FormGroup>
@@ -37,7 +33,9 @@ const DealInputs = ({ onConfigUpdated, data }: IProps) => {
           placeholder="E.g. 1, 2, 3..."
           defaultValue={dealData?.percent_discount || ""}
           onChange={(event) =>
-            onInputUpdated("percent_discount", +event.target.value)
+            onInputUpdated({
+              percent_discount: +event.target.value,
+            })
           }
         />
       </FormGroup>

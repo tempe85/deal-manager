@@ -42,6 +42,11 @@ export default class Deals extends React.Component<{}, IState> {
 
   private columns = [
     {
+      dataField: "deal_id",
+      text: "Deal Id",
+      filter: textFilter(),
+    },
+    {
       dataField: "percent_discount",
       text: "Percent Discount",
       filter: textFilter(),
@@ -133,8 +138,15 @@ export default class Deals extends React.Component<{}, IState> {
   };
 
   private addDeal = async (percent_discount: number) => {
+    if (percent_discount === undefined || percent_discount < 0) {
+      toast.error("Discount was undefined or negative");
+      return;
+    }
     try {
       const response = await addDealRequest(percent_discount);
+      if(response.affectedRows <= 0){
+        toast.error(`Unable to add deal, 0 rows were updated in query`)
+      }
       const deal_id = response.insertId;
       const newDeal: IDeal = { percent_discount, deal_id };
       this.setState({
@@ -149,6 +161,7 @@ export default class Deals extends React.Component<{}, IState> {
   };
 
   private editDeal = async (newDeal: IDeal) => {
+    console.log("newDeal", newDeal);
     try {
       await editDealRequest(newDeal);
       let data: IDeal[] = [...this.state.dealData];

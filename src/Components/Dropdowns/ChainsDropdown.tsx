@@ -1,41 +1,49 @@
 import React, { useState, useEffect } from "react";
-import { DealMockList, ChainMockList } from "../../Mocks";
 import Select from "react-select";
 import { ISelect } from "../../Interfaces/ISelect";
+import { GetChainSelectionsAsync } from "../Selections/Selections";
 
 interface IProps {
-  onChange: (value: string) => void;
-  defaultValue?: ISelect | undefined;
+  onChange: (value: {}) => void;
+  defaultValue?: string | undefined;
 }
 
 function ChainsDropdown({ onChange, defaultValue }: IProps) {
   const [selections, setSelections] = useState<ISelect[]>();
 
   useEffect(() => {
-    const selections = getSelections();
-    setSelections(selections);
+    const fetchChainSelections = async () => {
+      const selections = await GetChainSelectionsAsync();
+      setSelections(selections);
+    };
+    fetchChainSelections();
   }, []);
 
   const onInputUpdated = (selection: any) => {
     onChange(selection.value);
   };
-  const getSelections = (): ISelect[] => {
-    let selections: ISelect[] = [];
-    ChainMockList.forEach((p) => {
-      selections.push({
-        value: { chain_name: p.chain_name },
-        label: p.chain_name,
-      });
-    });
-    return selections;
+
+  const getDefaultValue = (): ISelect | undefined => {
+    if (!selections || defaultValue === undefined) {
+      return;
+    }
+    const index = selections.findIndex(
+      (p) => p.value?.chain_name === defaultValue
+    );
+    if (index === -1) return;
+    return selections[index];
   };
 
-  return (
+  return defaultValue === undefined ? (
+    <Select options={selections} onChange={onInputUpdated} />
+  ) : selections ? (
     <Select
-      defaultValue={defaultValue}
+      defaultValue={getDefaultValue()}
       options={selections}
       onChange={onInputUpdated}
     />
+  ) : (
+    <></>
   );
 }
 

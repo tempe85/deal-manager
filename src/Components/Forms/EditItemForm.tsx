@@ -19,7 +19,7 @@ function EditItemForm({ toggleModal, type, onEditSubmited, data }: IProps) {
 
   const [config, setConfig] = useState<{}>();
 
-  const onConfigUpdated = (propName: string, value: {}) => {
+  const onConfigUpdated = (value: {}) => {
     setConfig({
       ...config,
       ...value,

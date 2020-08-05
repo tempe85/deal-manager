@@ -2,19 +2,15 @@ import React, { useState, useEffect } from "react";
 import { FormGroup, Label, Input } from "reactstrap";
 import { IRestaurantChainLocation } from "../../Interfaces";
 import ChainsDropdown from "../Dropdowns/ChainsDropdown";
-import { ChainSelections } from "../Selections/Selections";
 
 interface IProps {
-  onConfigUpdated: (propName: string, value: number | string | Date) => void;
+  onConfigUpdated: (value: Partial<IRestaurantChainLocation>) => void;
   data: any;
 }
 
 const RestaurantChainLocationInputs = ({ onConfigUpdated, data }: IProps) => {
-  const onInputUpdated = (
-    inputName: keyof IRestaurantChainLocation,
-    value: number | string | Date
-  ) => {
-    onConfigUpdated(inputName, value);
+  const onInputUpdated = (value: {}) => {
+    onConfigUpdated(value);
   };
 
   const [locationData, setLocationData] = useState<
@@ -23,7 +19,7 @@ const RestaurantChainLocationInputs = ({ onConfigUpdated, data }: IProps) => {
   useEffect(() => {
     if (data) {
       setLocationData(data);
-      onConfigUpdated("chain_location_id", data?.chain_location_id!);
+      onConfigUpdated({ chain_location_id: data?.chain_location_id });
     }
   }, [data]);
 
@@ -39,34 +35,30 @@ const RestaurantChainLocationInputs = ({ onConfigUpdated, data }: IProps) => {
       <FormGroup>
         <Label for="chainName">Restaurant Chain Name</Label>
         <ChainsDropdown
-          onChange={(returnValue) => onInputUpdated("chain_name", returnValue)}
-          defaultValue={
-            data
-              ? ChainSelections().filter((p) => p.value === data?.chain_name)[0]
-              : undefined
-          }
+          onChange={(returnValue) => onInputUpdated(returnValue)}
+          defaultValue={data?.chain_name}
         />
       </FormGroup>
       <FormGroup>
-        <Label for="cityState">City</Label>
+        <Label for="city">City</Label>
         <Input
           type="text"
-          name="cityState"
-          id="cityState"
+          name="city"
+          id="city"
           defaultValue={locationData?.city}
           placeholder="Add City Name"
-          onChange={(event) => onInputUpdated("city", event.target.value)}
+          onChange={(event) => onInputUpdated({ city: event.target.value })}
         />
       </FormGroup>
       <FormGroup>
-        <Label for="cityState">State</Label>
+        <Label for="state">State</Label>
         <Input
           type="text"
-          name="cityState"
-          id="cityState"
+          name="state"
+          id="state"
           defaultValue={locationData?.state}
           placeholder="Add a State (e.g. WA)"
-          onChange={(event) => onInputUpdated("state", event.target.value)}
+          onChange={(event) => onInputUpdated({ state: event.target.value })}
         />
       </FormGroup>
     </>

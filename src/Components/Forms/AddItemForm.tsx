@@ -17,11 +17,7 @@ function AddItemForm({ toggleModal, type, onAddSubmited }: IProps) {
 
   const [config, setConfig] = useState<{}>();
 
-  const onConfigUpdated = (propName: string, value: {}) => {
-    const test = {
-      ...config,
-      ...value,
-    };
+  const onConfigUpdated = (value: {}) => {
     setConfig({
       ...config,
       ...value,

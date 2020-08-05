@@ -36,6 +36,5 @@ export const FormatterDeal = (
   cell: any,
   row: ICustomerRestaurantTransaction | ILocationDeal
 ) => {
-  const entry = DealMockList.filter((p) => p.deal_id === row.deal_id)[0];
-  return `${entry.percent_discount}%`;
+  return `${cell}%`;
 };

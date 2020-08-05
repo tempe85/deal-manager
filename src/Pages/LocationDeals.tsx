@@ -3,15 +3,15 @@ import Layout from "../Containers/Layout";
 import { textFilter } from "react-bootstrap-table2-filter";
 import AddItem from "../Components/AddItem";
 import { AddFormTypes } from "../Enums";
-import { ILocationDeal } from "../Interfaces";
+import { ILocationDeal, IRestaurantChainLocation } from "../Interfaces";
 import { IsObjectNullOrEmpty } from "../Utils";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
-import { faMinusCircle, faEdit } from "@fortawesome/free-solid-svg-icons";
+import { faMinusCircle } from "@fortawesome/free-solid-svg-icons";
 import { LocationDealsMock } from "../Mocks/LocationDeal.mock";
 import DataEntityTable from "./Components/DataTable";
 import AddItemFormModalHelper from "./Components/AddItemFormModalHelper";
 import EditItemFormModalHelper from "./Components/EditItemFormModalHelper";
-import { DealMockList, RestaurantChainLocationMock } from "../Mocks";
+
 import {
   FormatterChainName,
   FormatterCity,
@@ -88,7 +88,8 @@ export default function LocationDeals() {
     );
   };
 
-  const handleAddEntitySubmited = (config: {}) => {
+  const handleAddEntitySubmited = (config: Partial<ILocationDeal>) => {
+    console.log("adding stuff", config);
     const addData = { ...config } as ILocationDeal;
     if (IsObjectNullOrEmpty(addData)) {
       return;

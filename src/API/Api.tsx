@@ -5,7 +5,12 @@ import {
   IAddApiResponse,
   ICustomerRestaurantTransaction,
   ICustomerSelection,
-  ITransactionRequest,
+  ITransactionAddRequest,
+  ITransactionEditRequest,
+  IRestaurantChain,
+  IRestaurantChainLocation,
+  IChainLocationAddRequest,
+  IChainLocationUpdateRequest,
 } from "../Interfaces";
 import { IChainLocationSelection } from "../Interfaces/IChainLocationSelection";
 
@@ -83,7 +88,9 @@ export const getTransactions = async () => {
 
 export const deleteTransactionRequest = async (transaction_id: number) => {
   return axios
-    .delete(`${baseUrl}/transactions?transaction_id=${transaction_id}`)
+    .delete<IAddApiResponse>(
+      `${baseUrl}/transactions?transaction_id=${transaction_id}`
+    )
     .then((response) => {
       return response.data;
     })
@@ -93,10 +100,23 @@ export const deleteTransactionRequest = async (transaction_id: number) => {
 };
 
 export const addTransactionRequest = async (
-  newTransaction: ITransactionRequest
+  newTransaction: ITransactionAddRequest
 ) => {
   return axios
     .post<IAddApiResponse>(`${baseUrl}/transactions`, newTransaction)
+    .then((response) => {
+      return response.data;
+    })
+    .catch((error) => {
+      throw error;
+    });
+};
+
+export const editTransactionRequest = async (
+  updatedTransaction: ITransactionEditRequest
+) => {
+  return axios
+    .put<IAddApiResponse>(`${baseUrl}/transactions`, updatedTransaction)
     .then((response) => {
       return response.data;
     })
@@ -119,6 +139,90 @@ export const getCustomerSelections = async () => {
 export const getChainLocationSelections = async () => {
   return axios
     .get<IChainLocationSelection[]>(`${baseUrl}/transactions/modal/locations`)
+    .then((response) => {
+      return response.data;
+    })
+    .catch((error) => {
+      throw error;
+    });
+};
+
+export const getChains = async () => {
+  return axios
+    .get<IRestaurantChain[]>(`${baseUrl}/chains`)
+    .then((response) => {
+      return response.data;
+    })
+    .catch((error) => {
+      throw error;
+    });
+};
+export const deleteChainRequest = async (chainName: string) => {
+  return axios
+    .delete<IAddApiResponse>(`${baseUrl}/chains?chain_name=${chainName}`)
+    .then((response) => {
+      return response.data;
+    })
+    .catch((error) => {
+      throw error;
+    });
+};
+
+export const addChainRequest = async (chainName: string) => {
+  return axios
+    .post<IAddApiResponse>(`${baseUrl}/chains`, {
+      chain_name: chainName,
+    })
+    .then((response) => {
+      return response.data;
+    })
+    .catch((error) => {
+      throw error;
+    });
+};
+
+export const getLocations = async () => {
+  return axios
+    .get<IRestaurantChainLocation[]>(`${baseUrl}/locations`)
+    .then((response) => {
+      return response.data;
+    })
+    .catch((error) => {
+      throw error;
+    });
+};
+
+export const addLocationRequest = async (
+  chainLocationRequest: IChainLocationAddRequest
+) => {
+  return axios
+    .post<IAddApiResponse>(`${baseUrl}/locations`, chainLocationRequest)
+    .then((response) => {
+      return response.data;
+    })
+    .catch((error) => {
+      throw error;
+    });
+};
+
+export const updateLocationRequest = async (
+  chainLocationRequest: IChainLocationUpdateRequest
+) => {
+  return axios
+    .put<IAddApiResponse>(`${baseUrl}/locations`, chainLocationRequest)
+    .then((response) => {
+      return response.data;
+    })
+    .catch((error) => {
+      throw error;
+    });
+};
+
+export const deleteLocationRequest = async (chainLocationId: number) => {
+  return axios
+    .delete<IAddApiResponse>(
+      `${baseUrl}/locations?chain_location_id=${chainLocationId}`
+    )
     .then((response) => {
       return response.data;
     })

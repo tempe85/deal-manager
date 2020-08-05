@@ -5,12 +5,12 @@ import AddItem from "../Components/AddItem";
 import { AddFormTypes } from "../Enums";
 import {
   ICustomerRestaurantTransaction,
-  ITransactionRequest,
+  ITransactionAddRequest,
+  ITransactionEditRequest,
 } from "../Interfaces";
 import { IsObjectNullOrEmpty, DateFormatter } from "../Utils";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import { faMinusCircle, faEdit } from "@fortawesome/free-solid-svg-icons";
-import { CustomerRestaurantTransactionMock, CustomerMockList } from "../Mocks";
 import DataEntityTable from "./Components/DataTable";
 import AddItemFormModalHelper from "./Components/AddItemFormModalHelper";
 import EditItemFormModalHelper from "./Components/EditItemFormModalHelper";
@@ -18,36 +18,21 @@ import {
   getTransactions,
   deleteTransactionRequest,
   addTransactionRequest,
+  editTransactionRequest,
 } from "../API/Api";
-import { GetChainLocationSelectionsAsync } from "../Components/Selections/Selections";
 import { toast } from "react-toastify";
+import { FormatterDeal } from "../Utils/Formatters/Formatter";
+import Loading from "./Components/Loading";
 
 export default function Transactions() {
   const [isLoading, setIsLoading] = useState(false);
   const [addItemModalOpen, setAddItemModalOpen] = useState(false);
   const [transactionData, setTransactionData] = useState<
     ICustomerRestaurantTransaction[]
-  >(CustomerRestaurantTransactionMock);
+  >();
   const [editModalData, setEditModalData] = useState<
     ICustomerRestaurantTransaction | undefined
   >(undefined);
-
-  // const FormatterFirstName = (discountCardNumber: number) => {
-  //   const customerEntry = CustomerMockList.filter(
-  //     (p) => p.discount_card_number === discountCardNumber
-  //   )[0];
-  //   return customerEntry.first_name;
-  // };
-
-  const FormatterLastName = (
-    cell: any,
-    row: ICustomerRestaurantTransaction
-  ) => {
-    const customerEntry = CustomerMockList.filter(
-      (p) => p.discount_card_number === row.discount_card_number
-    )[0];
-    return customerEntry.last_name;
-  };
 
   useEffect(() => {
     //Triggers fetchTransactions
@@ -66,11 +51,17 @@ export default function Transactions() {
       setTransactionData(transactions);
       setIsLoading(false);
     } catch (error) {
+      toast.error(`Unable to fetch transactions. ${error}`);
       setIsLoading(false);
     }
   };
 
   const columns = [
+    {
+      dataField: "transaction_id",
+      text: "Transaction Id",
+      filter: textFilter(),
+    },
     {
       dataField: "first_name",
       text: "Customer First Name",
@@ -97,9 +88,11 @@ export default function Transactions() {
       filter: textFilter(),
     },
     {
-      dataField: "deal_id",
+      dataField: "percent_discount",
       text: "Discount",
       filter: textFilter(),
+      formatter: FormatterDeal,
+      filterValue: FormatterDeal,
     },
     {
       dataField: "date",
@@ -144,11 +137,19 @@ export default function Transactions() {
   ) => {
     const { transaction_id } = transaction;
     try {
-      await deleteTransactionRequest(transaction_id);
-      const filteredData = transactionData.filter(
-        (p) => p.transaction_id !== transaction_id
-      );
-      setTransactionData(filteredData);
+      const response = await deleteTransactionRequest(transaction_id);
+      if (response.affectedRows <= 0) {
+        toast.error(
+          `Error deleting transaction Id ${transaction_id}. Zero rows were updated in query`
+        );
+        return;
+      }
+      setIsLoading(true);
+      //TODO: Figure out why useState is being dumb
+      // transactionData.filter(
+      //   (p) => p.transaction_id.toString() !== transaction_id.toString()
+      // );
+      //setTransactionData(filteredData);
       toast.success(`Deleted transaction ${transaction_id}!`);
     } catch (error) {
       toast.error(`Error deleting transaction Id ${transaction_id}: ${error}`, {
@@ -168,20 +169,9 @@ export default function Transactions() {
   const handleOpenAddItemModal = () => {
     setAddItemModalOpen(true);
   };
-  // const handleRemoveEntity = (transaction: ICustomerRestaurantTransaction) => {
-  //   setTransactionData(
-  //     transactionData.filter(
-  //       (p) => !(p.transaction_id === transaction.transaction_id)
-  //     )
-  //   );
-  // };
-  // const convertTransactionRequestIntoRestaurantTransaction = (tranasctionRequest: ITransactionRequest, insertId: number): ICustomerRestaurantTransaction => {
-  //   let customerRestaurantTransaction: ICustomerRestaurantTransaction = {} as ICustomerRestaurantTransaction;
-  //   customerRestaurantTransaction.
-  // }
 
   const getTransactionAddRequestObject = (config: { [key: string]: any }) => {
-    const transactionAddRequest: ITransactionRequest = {
+    const transactionAddRequest: ITransactionAddRequest = {
       discount_card_number: config.discount_card_number,
       chain_location_id: config.chain_location_id,
       deal_id: config.deal_id,
@@ -191,7 +181,7 @@ export default function Transactions() {
   };
 
   const isValidTransactionAddRequest = (
-    transactionAddRequest: ITransactionRequest
+    transactionAddRequest: ITransactionAddRequest
   ) => {
     if (
       transactionAddRequest.discount_card_number === undefined ||
@@ -228,23 +218,27 @@ export default function Transactions() {
     const addData = getTransactionAddRequestObject(config);
     if (IsObjectNullOrEmpty(addData)) {
       return;
+    } else if (!isValidTransactionAddRequest(addData)) {
+      toast.error(`Invalid add request. Some fields are undefined.`, {
+        autoClose: false,
+      });
+      return;
     } else {
       try {
-        if (!isValidTransactionAddRequest(addData)) {
-          toast.error(`Invalid add request. Some fields are undefined.`, {
-            autoClose: false,
-          });
-          return;
-        }
         const response = await addTransactionRequest(addData);
-        const insertId = response.insertId;
-        const newTransaction = getTransactionObject(config, insertId);
         if (response.affectedRows > 0) {
           toast.success(`Added transaction Id: ${response.insertId}!`);
         } else {
           toast.error(`Failed to add transaction. Affected rows was 0`);
+          return
         }
-        setTransactionData([...transactionData, newTransaction]);
+        const insertId = response.insertId;
+        const newTransaction = getTransactionObject(config, insertId);
+        setTransactionData(
+          transactionData
+            ? [...transactionData, newTransaction]
+            : [newTransaction]
+        );
       } catch (error) {
         toast.error(`Failed to add transaction. ${error}`);
       }
@@ -253,21 +247,61 @@ export default function Transactions() {
 
   const [editItemModalIsOpen, setEditItemModalOpen] = useState(false);
 
-  const handleEntityEditedSubmited = (
+  const getTransactioneditObject = (
+    config: Partial<ICustomerRestaurantTransaction>,
+    originalObject: ICustomerRestaurantTransaction
+  ): ITransactionEditRequest => {
+    const editTransactionRequest: ITransactionEditRequest = {
+      transaction_id: config.transaction_id ?? originalObject.transaction_id,
+      discount_card_number:
+        config?.discount_card_number ?? originalObject.discount_card_number,
+      chain_location_id:
+        config?.chain_location_id ?? originalObject.chain_location_id,
+      deal_id: config?.deal_id ?? originalObject.deal_id,
+      date: config?.date ?? originalObject.date,
+    };
+
+    return editTransactionRequest;
+  };
+  const handleEntityEditedSubmited = async (
     config: Partial<ICustomerRestaurantTransaction>
   ) => {
-    let data: ICustomerRestaurantTransaction[] = [...transactionData];
+    let data: ICustomerRestaurantTransaction[] = [...transactionData!];
+    if (Object.keys(config).length <= 1) {
+      toast.info(
+        `Did not update transaction ${config?.transaction_id}, no data was changed`
+      );
+      return;
+    }
+    console.log("config", config, "data", data);
     let customerIndex = data?.findIndex(
       (p) => p.transaction_id === config?.transaction_id
     );
     if (customerIndex === -1) {
       return;
     }
-    data[customerIndex] = {
-      ...data[customerIndex],
-      ...config,
-    };
-    setTransactionData(data);
+    const transactionEditRequest = getTransactioneditObject(
+      config,
+      data[customerIndex]
+    );
+    try {
+      const response = await editTransactionRequest(transactionEditRequest);
+      data[customerIndex] = {
+        ...data[customerIndex],
+        ...config,
+      };
+      if (response.affectedRows <= 0) {
+        toast.error(
+          `Did not update any rows with edit request for transaction ${config.transaction_id}`
+        );
+      }
+      setTransactionData(data);
+      toast.success(`Updated transaction ${config.transaction_id}!`);
+    } catch (error) {
+      toast.error(
+        `Error updating transaction ${config.transaction_id}: ${error}`
+      );
+    }
   };
   const toggleEditItem = () => {
     setEditItemModalOpen(!editItemModalIsOpen);
@@ -282,13 +316,15 @@ export default function Transactions() {
             title={"Add new Transaction"}
           />
         </div>
-        {transactionData && (
-          <DataEntityTable
-            keyField="transaction_id"
-            data={transactionData}
-            columns={columns}
-          />
-        )}
+        <Loading isLoading={isLoading}>
+          {transactionData && (
+            <DataEntityTable
+              keyField="transaction_id"
+              data={transactionData}
+              columns={columns}
+            />
+          )}
+        </Loading>
         <AddItemFormModalHelper
           handleAddEntitySubmited={handleAddEntitySubmited}
           formType={AddFormTypes.customerRestaurantTransaction}

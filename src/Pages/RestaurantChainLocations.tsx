@@ -1,19 +1,33 @@
-import React, { useState } from "react";
+import React, { useState, useEffect } from "react";
 import Layout from "../Containers/Layout";
 import { textFilter } from "react-bootstrap-table2-filter";
 import AddItem from "../Components/AddItem";
 import { AddFormTypes } from "../Enums";
-import { IRestaurantChainLocation } from "../Interfaces";
+import {
+  IRestaurantChainLocation,
+  IChainLocationAddRequest,
+} from "../Interfaces";
 import { IsObjectNullOrEmpty } from "../Utils";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import { faMinusCircle, faEdit } from "@fortawesome/free-solid-svg-icons";
-import { RestaurantChainLocationMock } from "../Mocks/RestaurantChainLocation.mock";
 import DataEntityTable from "./Components/DataTable";
 import AddItemFormModalHelper from "./Components/AddItemFormModalHelper";
 import EditItemFormModalHelper from "./Components/EditItemFormModalHelper";
+import {
+  getLocations,
+  deleteLocationRequest,
+  addLocationRequest,
+} from "../API/Api";
+import { toast } from "react-toastify";
+import Loading from "./Components/Loading";
 
 export default function RestaurantChainLocations() {
   const columns = [
+    {
+      dataField: "chain_location_id",
+      text: "Chain Location Id",
+      filter: textFilter(),
+    },
     {
       dataField: "chain_name",
       text: "Chain Name",
@@ -39,7 +53,7 @@ export default function RestaurantChainLocations() {
           style={{ cursor: "pointer" }}
           color="red"
           icon={faMinusCircle}
-          onClick={() => handleRemoveEntity(row)}
+          onClick={() => deleteLocation(row)}
         />
       ),
     },
@@ -67,10 +81,33 @@ export default function RestaurantChainLocations() {
   const [addItemModalOpen, setAddItemModalOpen] = useState(false);
   const [chainLocationData, setChainLocationData] = useState<
     IRestaurantChainLocation[]
-  >(RestaurantChainLocationMock);
+  >();
   const [editModalData, setEditModalData] = useState<
     IRestaurantChainLocation | undefined
   >(undefined);
+  const [isLoading, setIsLoading] = useState(false);
+
+  useEffect(() => {
+    //Triggers fetchTransactions
+    setIsLoading(true);
+  }, []);
+
+  useEffect(() => {
+    if (isLoading) {
+      fetchLocations();
+    }
+  }, [isLoading]);
+
+  const fetchLocations = async () => {
+    try {
+      const locations = await getLocations();
+      setChainLocationData(locations);
+      setIsLoading(false);
+    } catch (error) {
+      toast.error(`Unable to fetch transactions. ${error}`);
+      setIsLoading(false);
+    }
+  };
 
   const handleAddItemToggle = () => {
     setAddItemModalOpen(!addItemModalOpen);
@@ -78,24 +115,89 @@ export default function RestaurantChainLocations() {
   const handleOpenAddItemModal = () => {
     setAddItemModalOpen(true);
   };
-  const handleRemoveEntity = (deal: IRestaurantChainLocation) => {
-    setChainLocationData(
-      chainLocationData.filter(
-        (p) => !(p.chain_location_id === deal.chain_location_id)
-      )
-    );
+
+  const deleteLocation = async (chainLocation: IRestaurantChainLocation) => {
+    const { chain_location_id } = chainLocation;
+    try {
+      const response = await deleteLocationRequest(chain_location_id);
+      if (response.affectedRows <= 0) {
+        toast.error(
+          `Error deleting location Id ${chain_location_id}. Zero rows were updated in query`
+        );
+        return;
+      }
+      setIsLoading(true);
+      //TODO: Figure out why useState is being dumb
+      // setChainLocationData(
+      //   chainLocationData?.filter(
+      //     (p) => !(p.chain_location_id === deal.chain_location_id)
+      //   )
+      // );
+      toast.success(`Deleted transaction ${chain_location_id}!`);
+    } catch (error) {
+      toast.error(
+        `Error deleting transaction Id ${chain_location_id}: ${error}`,
+        {
+          autoClose: false,
+        }
+      );
+    }
   };
 
-  const handleAddEntitySubmited = (config: {}) => {
-    const addData = { ...config } as IRestaurantChainLocation;
-    if (IsObjectNullOrEmpty(addData)) {
+  const isValidLocationAddRequest = (
+    config: Partial<IRestaurantChainLocation>
+  ) => {
+    if (config.chain_name && config.city && config.state) {
+      return true;
+    }
+    return false;
+  };
+
+  const getLocationAddRequestObject = (
+    config: Partial<IRestaurantChainLocation>
+  ) => {
+    const locationAddRequest: IChainLocationAddRequest = {
+      chain_name: config.chain_name!,
+      city: config.city!,
+      state: config.state!,
+    };
+    return locationAddRequest;
+  };
+  const getRestaurantChainLocationObject = (
+    addRequest: IChainLocationAddRequest,
+    insertId: number
+  ): IRestaurantChainLocation => {
+    const chainLocationObject: IRestaurantChainLocation = {
+      chain_location_id: insertId,
+      chain_name: addRequest.chain_name,
+      city: addRequest.city,
+      state: addRequest.state,
+    };
+    return chainLocationObject;
+  };
+
+  const handleAddEntitySubmited = async (
+    config: Partial<IRestaurantChainLocation>
+  ) => {
+    if (!isValidLocationAddRequest(config)) {
+      toast.error(`Invalid add request. Some fields are undefined.`, {
+        autoClose: false,
+      });
       return;
     } else {
-      const maxLocationId = Math.max(
-        ...chainLocationData.map((p) => p.chain_location_id)
+      const addData = getLocationAddRequestObject(config);
+      const response = await addLocationRequest(addData);
+      if (response.affectedRows > 0) {
+        toast.success(`Added location Id: ${response.insertId}!`);
+      } else {
+        toast.error(`Failed to add location. Affected rows was 0`);
+        return;
+      }
+      const insertId = response.insertId;
+      const newLocation = getRestaurantChainLocationObject(addData, insertId);
+      setChainLocationData(
+        chainLocationData ? [...chainLocationData, newLocation] : [newLocation]
       );
-      addData.chain_location_id = maxLocationId + 1;
-      setChainLocationData([...chainLocationData, addData]);
     }
   };
 
@@ -104,7 +206,7 @@ export default function RestaurantChainLocations() {
   const handleEntityEditedSubmited = (
     config: Partial<IRestaurantChainLocation>
   ) => {
-    let data: IRestaurantChainLocation[] = [...chainLocationData];
+    let data: IRestaurantChainLocation[] = [...chainLocationData!];
     let customerIndex = data?.findIndex(
       (p) => p.chain_location_id === config?.chain_location_id
     );
@@ -131,11 +233,15 @@ export default function RestaurantChainLocations() {
             title={"Add new Restaurant Chain Location"}
           />
         </div>
-        <DataEntityTable
-          keyField="chain_location_id"
-          data={chainLocationData}
-          columns={columns}
-        />
+        <Loading isLoading={isLoading}>
+          {chainLocationData && (
+            <DataEntityTable
+              keyField="chain_location_id"
+              data={chainLocationData}
+              columns={columns}
+            />
+          )}
+        </Loading>
         <AddItemFormModalHelper
           handleAddEntitySubmited={handleAddEntitySubmited}
           formType={AddFormTypes.restaurantChainLocation}
