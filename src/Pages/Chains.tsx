@@ -60,7 +60,7 @@ export default function Chains() {
     },
   ];
   const [addItemModalOpen, setAddItemModalOpen] = useState(false);
-  const [chainData, setChainData] = useState<IRestaurantChain[]>(ChainMockList);
+  const [chainData, setChainData] = useState<IRestaurantChain[]>();
 
   const handleAddItemToggle = () => {
     setAddItemModalOpen(!addItemModalOpen);
@@ -108,7 +108,11 @@ export default function Chains() {
       if (response.affectedRows <= 0) {
         toast.error(`Unable to add chain, 0 rows were updated in query`);
       }
-      setChainData([...chainData, { chain_name: chainName }]);
+      setChainData(
+        chainData
+          ? [...chainData, { chain_name: chainName }]
+          : [{ chain_name: chainName }]
+      );
       toast.success(`Added chain ${chainName}!`);
     } catch (error) {
       toast.error(`Unable to add chain: ${error}`, {
