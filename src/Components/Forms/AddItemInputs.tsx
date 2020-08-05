@@ -10,32 +10,69 @@ import RestaurantChainLocationInputs from "./RestaurantChainLocationInputs";
 interface IProps {
   type: AddFormTypes;
   onConfigUpdated: (value: {}) => void;
+  toggleModal: () => void;
+  onFormSubmit: (event: any) => void;
   data?: any;
 }
-function AddItemInputs({ type, onConfigUpdated, data }: IProps) {
+function AddItemInputs({
+  type,
+  toggleModal,
+  onFormSubmit,
+  onConfigUpdated,
+  data,
+}: IProps) {
   switch (type) {
     case AddFormTypes.customer:
-      return <CustomerInputs onConfigUpdated={onConfigUpdated} data={data} />;
+      return (
+        <CustomerInputs
+          toggleModal={toggleModal}
+          onFormSubmit={onFormSubmit}
+          onConfigUpdated={onConfigUpdated}
+          data={data}
+        />
+      );
     case AddFormTypes.deal:
-      return <DealInputs onConfigUpdated={onConfigUpdated} data={data} />;
+      return (
+        <DealInputs
+          onFormSubmit={onFormSubmit}
+          toggleModal={toggleModal}
+          onConfigUpdated={onConfigUpdated}
+          data={data}
+        />
+      );
     case AddFormTypes.customerRestaurantTransaction:
       return (
         <CustomerRestaurantTransactionInputs
           onConfigUpdated={onConfigUpdated}
           data={data}
+          onFormSubmit={onFormSubmit}
+          toggleModal={toggleModal}
         />
       );
     case AddFormTypes.locationDeal:
       return (
-        <LocationDealInputs onConfigUpdated={onConfigUpdated} data={data} />
+        <LocationDealInputs
+          onFormSubmit={onFormSubmit}
+          toggleModal={toggleModal}
+          onConfigUpdated={onConfigUpdated}
+          data={data}
+        />
       );
     case AddFormTypes.restaurantChain:
-      return <RestaurantChainInputs onConfigUpdated={onConfigUpdated} />;
+      return (
+        <RestaurantChainInputs
+          onFormSubmit={onFormSubmit}
+          toggleModal={toggleModal}
+          onConfigUpdated={onConfigUpdated}
+        />
+      );
     case AddFormTypes.restaurantChainLocation:
       return (
         <RestaurantChainLocationInputs
           onConfigUpdated={onConfigUpdated}
           data={data}
+          onFormSubmit={onFormSubmit}
+          toggleModal={toggleModal}
         />
       );
     default:

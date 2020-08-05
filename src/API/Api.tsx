@@ -16,7 +16,7 @@ import {
 } from "../Interfaces";
 import { IChainLocationSelection } from "../Interfaces/IChainLocationSelection";
 
-const baseUrl = "http://localhost:8420";
+const baseUrl = "http://www.offcampusosu.com";
 
 export const getDeals = async () => {
   return axios

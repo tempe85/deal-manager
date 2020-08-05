@@ -1,14 +1,21 @@
 import React, { useState, useEffect } from "react";
-import { FormGroup, Label, Input } from "reactstrap";
+import { FormGroup, Label, Input, Button } from "reactstrap";
 import { IRestaurantChainLocation } from "../../Interfaces";
 import ChainsDropdown from "../Dropdowns/ChainsDropdown";
 
 interface IProps {
   onConfigUpdated: (value: Partial<IRestaurantChainLocation>) => void;
   data: any;
+  toggleModal: () => void;
+  onFormSubmit: (event: any) => void;
 }
 
-const RestaurantChainLocationInputs = ({ onConfigUpdated, data }: IProps) => {
+const RestaurantChainLocationInputs = ({
+  onConfigUpdated,
+  data,
+  toggleModal,
+  onFormSubmit,
+}: IProps) => {
   const onInputUpdated = (value: {}) => {
     onConfigUpdated(value);
   };
@@ -61,6 +68,13 @@ const RestaurantChainLocationInputs = ({ onConfigUpdated, data }: IProps) => {
           onChange={(event) => onInputUpdated({ state: event.target.value })}
         />
       </FormGroup>
+      <hr />
+      <div style={{ display: "flex", justifyContent: "space-between" }}>
+        <Button onClick={toggleModal}>Cancel</Button>
+        <Button color="primary" onClick={onFormSubmit}>
+          Submit
+        </Button>
+      </div>
     </>
   );
 };

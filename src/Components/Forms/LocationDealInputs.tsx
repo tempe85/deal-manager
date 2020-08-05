@@ -1,14 +1,21 @@
 import React from "react";
-import { FormGroup, Label } from "reactstrap";
+import { FormGroup, Label, Button } from "reactstrap";
 import DealDropdown from "../Dropdowns/DealDropdown";
 import ChainLocationDropDown from "../Dropdowns/ChainLocationDropdown";
 
 interface IProps {
   onConfigUpdated: (value: { [key: string]: number }) => void;
   data?: any;
+  toggleModal: () => void;
+  onFormSubmit: (event: any) => void;
 }
 
-const LocationDealInputs = ({ onConfigUpdated, data }: IProps) => {
+const LocationDealInputs = ({
+  onFormSubmit,
+  toggleModal,
+  onConfigUpdated,
+  data,
+}: IProps) => {
   const onInputUpdated = (value: { [key: string]: number }) => {
     onConfigUpdated(value);
   };
@@ -25,6 +32,13 @@ const LocationDealInputs = ({ onConfigUpdated, data }: IProps) => {
           onChange={(returnValue) => onInputUpdated(returnValue)}
         />
       </FormGroup>
+      <hr />
+      <div style={{ display: "flex", justifyContent: "space-between" }}>
+        <Button onClick={toggleModal}>Cancel</Button>
+        <Button color="primary" onClick={onFormSubmit}>
+          Submit
+        </Button>
+      </div>
     </>
   );
 };

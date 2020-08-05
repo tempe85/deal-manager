@@ -32,14 +32,9 @@ function EditItemForm({ toggleModal, type, onEditSubmited, data }: IProps) {
         onConfigUpdated={onConfigUpdated}
         type={type}
         data={data}
+        onFormSubmit={onFormSubmit}
+        toggleModal={toggleModal}
       />
-      <hr />
-      <div style={{ display: "flex", justifyContent: "space-between" }}>
-        <Button onClick={toggleModal}>Cancel</Button>
-        <Button color="primary" onClick={onFormSubmit}>
-          Submit
-        </Button>
-      </div>
     </Form>
   );
 }

@@ -1,5 +1,5 @@
 import React, { useEffect, useState } from "react";
-import { FormGroup, Label, Input } from "reactstrap";
+import { FormGroup, Label, Input, Button } from "reactstrap";
 import { ICustomerRestaurantTransaction } from "../../Interfaces";
 import CustomerDropdown from "../Dropdowns/CustomerDropdown";
 import ChainLocationDropDown from "../Dropdowns/ChainLocationDropdown";
@@ -9,10 +9,14 @@ import { GetDateInputFormat } from "../../Utils";
 interface IProps {
   onConfigUpdated: (value: {}) => void;
   data?: any;
+  toggleModal: () => void;
+  onFormSubmit: (event: any) => void;
 }
 
 const CustomerRestaurantTransactionInputs = ({
   onConfigUpdated,
+  toggleModal,
+  onFormSubmit,
   data,
 }: IProps) => {
   const [transactionData, setTransactionData] = useState<
@@ -75,6 +79,13 @@ const CustomerRestaurantTransactionInputs = ({
           onChange={(event) => onInputUpdated({ date: event.target.value })}
         />
       </FormGroup>
+      <hr />
+      <div style={{ display: "flex", justifyContent: "space-between" }}>
+        <Button onClick={toggleModal}>Cancel</Button>
+        <Button color="primary" onClick={onFormSubmit}>
+          Submit
+        </Button>
+      </div>
     </>
   );
 };

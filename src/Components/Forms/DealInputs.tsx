@@ -1,13 +1,20 @@
 import React, { useState, useEffect } from "react";
-import { FormGroup, Label, Input } from "reactstrap";
+import { FormGroup, Label, Input, Button } from "reactstrap";
 import { IDeal } from "../../Interfaces";
 
 interface IProps {
   onConfigUpdated: (value: { [key: string]: number }) => void;
   data?: any;
+  toggleModal: () => void;
+  onFormSubmit: (event: any) => void;
 }
 
-const DealInputs = ({ onConfigUpdated, data }: IProps) => {
+const DealInputs = ({
+  onConfigUpdated,
+  toggleModal,
+  onFormSubmit,
+  data,
+}: IProps) => {
   const onInputUpdated = (value: { [key: string]: number }) => {
     onConfigUpdated(value);
   };
@@ -15,7 +22,7 @@ const DealInputs = ({ onConfigUpdated, data }: IProps) => {
   useEffect(() => {
     if (data) {
       setDealData(data);
-      onConfigUpdated({deal_id: data?.deal_id});
+      onConfigUpdated({ deal_id: data?.deal_id });
     }
   }, [data]);
 
@@ -39,6 +46,13 @@ const DealInputs = ({ onConfigUpdated, data }: IProps) => {
           }
         />
       </FormGroup>
+      <hr />
+      <div style={{ display: "flex", justifyContent: "space-between" }}>
+        <Button onClick={toggleModal}>Cancel</Button>
+        <Button color="primary" onClick={onFormSubmit}>
+          Submit
+        </Button>
+      </div>
     </>
   );
 };

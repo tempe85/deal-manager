@@ -4,8 +4,8 @@ import AddItemInputs from "./AddItemInputs";
 import { AddFormTypes } from "../../Enums";
 
 interface IProps {
-  toggleModal: () => void;
   type: AddFormTypes;
+  toggleModal: () => void;
   onAddSubmited: (config: {}) => void;
 }
 
@@ -26,14 +26,7 @@ function AddItemForm({ toggleModal, type, onAddSubmited }: IProps) {
 
   return (
     <Form>
-      <AddItemInputs onConfigUpdated={onConfigUpdated} type={type} />
-      <hr />
-      <div style={{ display: "flex", justifyContent: "space-between" }}>
-        <Button onClick={toggleModal}>Cancel</Button>
-        <Button color="primary" onClick={onFormSubmit}>
-          Submit
-        </Button>
-      </div>
+      <AddItemInputs toggleModal={toggleModal} onFormSubmit={onFormSubmit} onConfigUpdated={onConfigUpdated} type={type} />
     </Form>
   );
 }

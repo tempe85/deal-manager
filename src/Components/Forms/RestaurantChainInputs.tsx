@@ -1,11 +1,17 @@
 import React from "react";
-import { FormGroup, Label, Input } from "reactstrap";
+import { FormGroup, Label, Input, Button } from "reactstrap";
 
 interface IProps {
   onConfigUpdated: (value: { [key: string]: string }) => void;
+  toggleModal: () => void;
+  onFormSubmit: (event: any) => void;
 }
 
-const RestaurantChainInputs = ({ onConfigUpdated }: IProps) => {
+const RestaurantChainInputs = ({
+  onConfigUpdated,
+  toggleModal,
+  onFormSubmit,
+}: IProps) => {
   const onInputUpdated = (value: { [key: string]: string }) => {
     onConfigUpdated(value);
   };
@@ -23,6 +29,13 @@ const RestaurantChainInputs = ({ onConfigUpdated }: IProps) => {
           }
         />
       </FormGroup>
+      <hr />
+      <div style={{ display: "flex", justifyContent: "space-between" }}>
+        <Button onClick={toggleModal}>Cancel</Button>
+        <Button color="primary" onClick={onFormSubmit}>
+          Submit
+        </Button>
+      </div>
     </>
   );
 };

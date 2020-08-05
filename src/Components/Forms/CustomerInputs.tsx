@@ -1,14 +1,21 @@
 import React, { useState, useEffect } from "react";
-import { FormGroup, Label, Input } from "reactstrap";
+import { FormGroup, Label, Input, Button } from "reactstrap";
 import { ICustomer } from "../../Interfaces";
 import { GetDateInputFormat } from "../../Utils";
 
 interface IProps {
   onConfigUpdated: (value: { [key: string]: number | string | Date }) => void;
+  toggleModal: () => void;
+  onFormSubmit: (event: any) => void;
   data?: any;
 }
 
-const CustomerInputs = ({ onConfigUpdated, data }: IProps) => {
+const CustomerInputs = ({
+  onConfigUpdated,
+  toggleModal,
+  onFormSubmit,
+  data,
+}: IProps) => {
   const [customerData, setCustomerData] = useState<ICustomer | undefined>(
     undefined
   );
@@ -88,6 +95,13 @@ const CustomerInputs = ({ onConfigUpdated, data }: IProps) => {
           }
         />
       </FormGroup>
+      <hr />
+      <div style={{ display: "flex", justifyContent: "space-between" }}>
+        <Button onClick={toggleModal}>Cancel</Button>
+        <Button color="primary" onClick={onFormSubmit}>
+          Submit
+        </Button>
+      </div>
     </>
   );
 };
