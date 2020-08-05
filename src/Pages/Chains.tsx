@@ -80,7 +80,7 @@ export default function Chains() {
         );
         return;
       }
-      setIsLoading(true);
+      await fetchChains();
       toast.success(`Deleted chain ${chain_name}!`);
     } catch (error) {
       toast.error(`Error deleting ${chain_name}: ${error}`, {

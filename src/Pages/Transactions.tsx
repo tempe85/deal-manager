@@ -144,7 +144,7 @@ export default function Transactions() {
         );
         return;
       }
-      setIsLoading(true);
+      await fetchTransactions();
       //TODO: Figure out why useState is being dumb
       // transactionData.filter(
       //   (p) => p.transaction_id.toString() !== transaction_id.toString()
@@ -230,7 +230,7 @@ export default function Transactions() {
           toast.success(`Added transaction Id: ${response.insertId}!`);
         } else {
           toast.error(`Failed to add transaction. Affected rows was 0`);
-          return
+          return;
         }
         const insertId = response.insertId;
         const newTransaction = getTransactionObject(config, insertId);
@@ -266,14 +266,13 @@ export default function Transactions() {
   const handleEntityEditedSubmited = async (
     config: Partial<ICustomerRestaurantTransaction>
   ) => {
-    let data: ICustomerRestaurantTransaction[] = [...transactionData!];
     if (Object.keys(config).length <= 1) {
       toast.info(
         `Did not update transaction ${config?.transaction_id}, no data was changed`
       );
       return;
     }
-    console.log("config", config, "data", data);
+    let data: ICustomerRestaurantTransaction[] = [...transactionData!];
     let customerIndex = data?.findIndex(
       (p) => p.transaction_id === config?.transaction_id
     );
@@ -286,15 +285,15 @@ export default function Transactions() {
     );
     try {
       const response = await editTransactionRequest(transactionEditRequest);
-      data[customerIndex] = {
-        ...data[customerIndex],
-        ...config,
-      };
       if (response.affectedRows <= 0) {
         toast.error(
           `Did not update any rows with edit request for transaction ${config.transaction_id}`
         );
       }
+      data[customerIndex] = {
+        ...data[customerIndex],
+        ...config,
+      };
       setTransactionData(data);
       toast.success(`Updated transaction ${config.transaction_id}!`);
     } catch (error) {

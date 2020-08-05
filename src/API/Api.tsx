@@ -11,6 +11,8 @@ import {
   IRestaurantChainLocation,
   IChainLocationAddRequest,
   IChainLocationUpdateRequest,
+  ILocationDeal,
+  ILocationDealAddRequest,
 } from "../Interfaces";
 import { IChainLocationSelection } from "../Interfaces/IChainLocationSelection";
 
@@ -56,17 +58,6 @@ export const addDealRequest = async (percent_discount: number) => {
     .post<IAddApiResponse>(
       `${baseUrl}/deals?percent_discount=${percent_discount}`
     )
-    .then((response) => {
-      return response.data;
-    })
-    .catch((error) => {
-      throw error;
-    });
-};
-
-export const getCustomers = async () => {
-  return axios
-    .get<ICustomer[]>(`${baseUrl}/customers/select`)
     .then((response) => {
       return response.data;
     })
@@ -223,6 +214,94 @@ export const deleteLocationRequest = async (chainLocationId: number) => {
     .delete<IAddApiResponse>(
       `${baseUrl}/locations?chain_location_id=${chainLocationId}`
     )
+    .then((response) => {
+      return response.data;
+    })
+    .catch((error) => {
+      throw error;
+    });
+};
+
+export const getLocationDeals = async () => {
+  return axios
+    .get<ILocationDeal[]>(`${baseUrl}/loc_deals`)
+    .then((response) => {
+      return response.data;
+    })
+    .catch((error) => {
+      throw error;
+    });
+};
+
+export const addLocationDealsRequest = async (
+  locationDealRequest: ILocationDealAddRequest
+) => {
+  return axios
+    .post<IAddApiResponse>(`${baseUrl}/loc_deals`, locationDealRequest)
+    .then((response) => {
+      return response.data;
+    })
+    .catch((error) => {
+      throw error;
+    });
+};
+
+export const deleteLocationDealRequest = async (
+  chain_location_id: number,
+  deal_id: number
+) => {
+  return axios
+    .delete<IAddApiResponse>(
+      `${baseUrl}/loc_deals?chain_location_id=${chain_location_id}&deal_id=${deal_id}`
+    )
+    .then((response) => {
+      return response.data;
+    })
+    .catch((error) => {
+      throw error;
+    });
+};
+
+export const getCustomers = async () => {
+  return axios
+    .get<ICustomer[]>(`${baseUrl}/customers`)
+    .then((response) => {
+      return response.data;
+    })
+    .catch((error) => {
+      throw error;
+    });
+};
+
+export const addCustomers = async (addCustomerRequest: ICustomer) => {
+  return axios
+    .post<IAddApiResponse>(`${baseUrl}/customers`, addCustomerRequest)
+    .then((response) => {
+      return response.data;
+    })
+    .catch((error) => {
+      throw error;
+    });
+};
+
+export const deleteCustomerRequest = async (discount_card_number: number) => {
+  return axios
+    .delete<IAddApiResponse>(
+      `${baseUrl}/customers?discount_card_number=${discount_card_number}`
+    )
+    .then((response) => {
+      return response.data;
+    })
+    .catch((error) => {
+      throw error;
+    });
+};
+
+export const updateCustomerRequest = async (
+  updateCustomerRequest: ICustomer
+) => {
+  return axios
+    .put<IAddApiResponse>(`${baseUrl}/customers`, updateCustomerRequest)
     .then((response) => {
       return response.data;
     })

@@ -6,8 +6,8 @@ import { AddFormTypes } from "../Enums";
 import {
   IRestaurantChainLocation,
   IChainLocationAddRequest,
+  IChainLocationUpdateRequest,
 } from "../Interfaces";
-import { IsObjectNullOrEmpty } from "../Utils";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import { faMinusCircle, faEdit } from "@fortawesome/free-solid-svg-icons";
 import DataEntityTable from "./Components/DataTable";
@@ -17,6 +17,7 @@ import {
   getLocations,
   deleteLocationRequest,
   addLocationRequest,
+  updateLocationRequest,
 } from "../API/Api";
 import { toast } from "react-toastify";
 import Loading from "./Components/Loading";
@@ -126,7 +127,7 @@ export default function RestaurantChainLocations() {
         );
         return;
       }
-      setIsLoading(true);
+      await fetchLocations();
       //TODO: Figure out why useState is being dumb
       // setChainLocationData(
       //   chainLocationData?.filter(
@@ -203,22 +204,59 @@ export default function RestaurantChainLocations() {
 
   const [editItemModalIsOpen, setEditItemModalOpen] = useState(false);
 
-  const handleEntityEditedSubmited = (
+  const getLocationEditObject = (
+    config: Partial<IRestaurantChainLocation>,
+    originalObject: IRestaurantChainLocation
+  ): IChainLocationUpdateRequest => {
+    const editLocationRequest: IChainLocationUpdateRequest = {
+      chain_location_id:
+        config.chain_location_id ?? originalObject.chain_location_id,
+      chain_name: config.chain_name ?? originalObject.chain_name,
+      city: config.city ?? originalObject.city,
+      state: config.state ?? originalObject.state,
+    };
+    return editLocationRequest;
+  };
+
+  const handleEntityEditedSubmited = async (
     config: Partial<IRestaurantChainLocation>
   ) => {
+    console.log("editing shit", config);
+    if (Object.keys(config).length <= 1) {
+      toast.info(
+        `Did not update transaction ${config?.chain_location_id}, no data was changed`
+      );
+      return;
+    }
     let data: IRestaurantChainLocation[] = [...chainLocationData!];
     let customerIndex = data?.findIndex(
       (p) => p.chain_location_id === config?.chain_location_id
     );
-    console.log("config", config, "data", data);
     if (customerIndex === -1) {
       return;
     }
-    data[customerIndex] = {
-      ...data[customerIndex],
-      ...config,
-    };
-    setChainLocationData(data);
+    const locationEditRequest = getLocationEditObject(
+      config,
+      data[customerIndex]
+    );
+    try {
+      const response = await updateLocationRequest(locationEditRequest);
+      if (response.affectedRows <= 0) {
+        toast.error(
+          `Did not update any rows with edit request for location ${config.chain_location_id}`
+        );
+      }
+      data[customerIndex] = {
+        ...data[customerIndex],
+        ...config,
+      };
+      setChainLocationData(data);
+      toast.success(`Updated transaction ${config.chain_location_id}!`);
+    } catch (error) {
+      toast.error(
+        `Error updating transaction ${config.chain_location_id}: ${error}`
+      );
+    }
   };
   const toggleEditItem = () => {
     setEditItemModalOpen(!editItemModalIsOpen);

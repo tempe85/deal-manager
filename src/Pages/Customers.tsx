@@ -1,7 +1,6 @@
-import React, { useState } from "react";
+import React, { useState, useEffect } from "react";
 import Layout from "../Containers/Layout";
 import { textFilter } from "react-bootstrap-table2-filter";
-import { MockDataContext } from "../Contexts/MockDataContext";
 import AddItem from "../Components/AddItem";
 import { AddFormTypes } from "../Enums";
 import { ICustomer } from "../Interfaces";
@@ -11,9 +10,41 @@ import { faMinusCircle, faEdit } from "@fortawesome/free-solid-svg-icons";
 import DataEntityTable from "./Components/DataTable";
 import AddItemFormModalHelper from "./Components/AddItemFormModalHelper";
 import EditItemFormModalHelper from "./Components/EditItemFormModalHelper";
-import { CustomerMockList } from "../Mocks";
+import { getCustomers } from "../API/Api";
+import { toast } from "react-toastify";
+import Loading from "./Components/Loading";
 
 export default function Customers() {
+  const [isLoading, setIsLoading] = useState(false);
+  const [addItemModalOpen, setAddItemModalOpen] = useState(false);
+  const [editItemModalIsOpen, setEditItemModalOpen] = useState(false);
+  const [editModalData, setEditModalData] = useState<ICustomer | undefined>(
+    undefined
+  );
+  const [customerData, setCustomerData] = useState<ICustomer[]>();
+
+  useEffect(() => {
+    //Triggers fetchCustomers
+    setIsLoading(true);
+  }, []);
+
+  useEffect(() => {
+    if (isLoading) {
+      fetchCustomers();
+    }
+  }, [isLoading]);
+
+  const fetchCustomers = async () => {
+    try {
+      const customers = await getCustomers();
+      setCustomerData(customers);
+      setIsLoading(false);
+    } catch (error) {
+      toast.error(`Unable to fetch customers. ${error}`);
+      setIsLoading(false);
+    }
+  };
+
   const columns = [
     {
       dataField: "discount_card_number",
@@ -64,16 +95,6 @@ export default function Customers() {
     },
   ];
 
-  const [addItemModalOpen, setAddItemModalOpen] = useState(false);
-  const [editItemModalIsOpen, setEditItemModalOpen] = useState(false);
-  const [editModalData, setEditModalData] = useState<ICustomer | undefined>(
-    undefined
-  );
-
-  const [customerData, setCustomerData] = useState<ICustomer[]>(
-    CustomerMockList
-  );
-
   const handleAddItemToggle = () => {
     setAddItemModalOpen(!addItemModalOpen);
   };
@@ -86,14 +107,14 @@ export default function Customers() {
   };
   const handleRemoveCustomer = (customer: ICustomer) => {
     setCustomerData(
-      customerData.filter(
+      customerData?.filter(
         (p) => !(p.discount_card_number === customer.discount_card_number)
       )
     );
   };
 
   const handleEntityEditedSubmited = (config: Partial<ICustomer>) => {
-    let data: ICustomer[] = [...customerData];
+    let data: ICustomer[] = customerData ? [...customerData] : [];
     let customerIndex = data?.findIndex(
       (p) => p.discount_card_number === config?.discount_card_number
     );
@@ -112,7 +133,9 @@ export default function Customers() {
     if (IsObjectNullOrEmpty(addCustomerData)) {
       return;
     } else {
-      setCustomerData([...customerData, addCustomerData]);
+      setCustomerData(
+        customerData ? [...customerData, addCustomerData] : [addCustomerData]
+      );
     }
   };
 
@@ -130,11 +153,15 @@ export default function Customers() {
             title={"Add new Customer"}
           />
         </div>
-        <DataEntityTable
-          keyField="discount_card_number"
-          data={customerData}
-          columns={columns}
-        />
+        <Loading isLoading={isLoading}>
+          {customerData && (
+            <DataEntityTable
+              keyField="discount_card_number"
+              data={customerData}
+              columns={columns}
+            />
+          )}
+        </Loading>
         <AddItemFormModalHelper
           handleAddEntitySubmited={handleCustomerAddSubmited}
           formType={AddFormTypes.customer}

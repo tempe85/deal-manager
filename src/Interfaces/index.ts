@@ -10,3 +10,4 @@ export type { ITransactionEditRequest } from "./ITransactionEditRequest";
 export type { ICustomerSelection } from "./ICustomerSelection";
 export type { IChainLocationAddRequest } from "./IChainLocationAddRequest";
 export type { IChainLocationUpdateRequest } from "./IChainLocationUpdateRequest";
+export type { ILocationDealAddRequest } from "./ILocationDealAddRequest";

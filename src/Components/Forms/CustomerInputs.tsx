@@ -1,9 +1,10 @@
 import React, { useState, useEffect } from "react";
 import { FormGroup, Label, Input } from "reactstrap";
 import { ICustomer } from "../../Interfaces";
+import { GetDateInputFormat } from "../../Utils";
 
 interface IProps {
-  onConfigUpdated: (propName: string, value: number | string | Date) => void;
+  onConfigUpdated: (value: { [key: string]: number | string | Date }) => void;
   data?: any;
 }
 
@@ -14,15 +15,12 @@ const CustomerInputs = ({ onConfigUpdated, data }: IProps) => {
   useEffect(() => {
     if (data) {
       setCustomerData(data);
-      onConfigUpdated("discount_card_number", data?.discount_card_number!);
+      onConfigUpdated({ discount_card_number: data?.discount_card_number! });
     }
   }, [data]);
 
-  const onInputUpdated = (
-    inputName: keyof ICustomer,
-    value: number | string | Date
-  ) => {
-    onConfigUpdated(inputName, value);
+  const onInputUpdated = (value: { [key: string]: number | string | Date }) => {
+    onConfigUpdated(value);
   };
   return (
     <>
@@ -42,7 +40,7 @@ const CustomerInputs = ({ onConfigUpdated, data }: IProps) => {
               id="discountCard"
               placeholder="E.g. 1, 2, 3..."
               onChange={(event) =>
-                onInputUpdated("discount_card_number", +event.target.value)
+                onInputUpdated({ discount_card_number: +event.target.value })
               }
             />
           </>
@@ -56,7 +54,9 @@ const CustomerInputs = ({ onConfigUpdated, data }: IProps) => {
           name="firstName"
           id="firstName"
           placeholder="Add Customer's First Name"
-          onChange={(event) => onInputUpdated("first_name", event.target.value)}
+          onChange={(event) =>
+            onInputUpdated({ first_name: event.target.value })
+          }
         />
       </FormGroup>
       <FormGroup>
@@ -67,7 +67,9 @@ const CustomerInputs = ({ onConfigUpdated, data }: IProps) => {
           name="lastName"
           id="lastName"
           placeholder="Add Customer's Last Name"
-          onChange={(event) => onInputUpdated("last_name", event.target.value)}
+          onChange={(event) =>
+            onInputUpdated({ last_name: event.target.value })
+          }
         />
       </FormGroup>
       <FormGroup>
@@ -76,8 +78,14 @@ const CustomerInputs = ({ onConfigUpdated, data }: IProps) => {
           type="date"
           name="birthDay"
           id="birthDay"
-          defaultValue={customerData?.birth_date || ""}
-          onChange={(event) => onInputUpdated("birth_date", event.target.value)}
+          defaultValue={
+            customerData?.birth_date
+              ? GetDateInputFormat(customerData.birth_date)
+              : ""
+          }
+          onChange={(event) =>
+            onInputUpdated({ birth_date: event.target.value })
+          }
         />
       </FormGroup>
     </>
