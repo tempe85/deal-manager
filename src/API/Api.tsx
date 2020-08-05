@@ -273,7 +273,7 @@ export const getCustomers = async () => {
     });
 };
 
-export const addCustomers = async (addCustomerRequest: ICustomer) => {
+export const addCustomerRequest = async (addCustomerRequest: ICustomer) => {
   return axios
     .post<IAddApiResponse>(`${baseUrl}/customers`, addCustomerRequest)
     .then((response) => {

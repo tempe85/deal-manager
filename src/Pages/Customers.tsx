@@ -10,7 +10,12 @@ import { faMinusCircle, faEdit } from "@fortawesome/free-solid-svg-icons";
 import DataEntityTable from "./Components/DataTable";
 import AddItemFormModalHelper from "./Components/AddItemFormModalHelper";
 import EditItemFormModalHelper from "./Components/EditItemFormModalHelper";
-import { getCustomers } from "../API/Api";
+import {
+  getCustomers,
+  deleteCustomerRequest,
+  addCustomerRequest,
+  updateCustomerRequest,
+} from "../API/Api";
 import { toast } from "react-toastify";
 import Loading from "./Components/Loading";
 
@@ -75,7 +80,7 @@ export default function Customers() {
           style={{ cursor: "pointer" }}
           color="red"
           icon={faMinusCircle}
-          onClick={() => handleRemoveCustomer(row)}
+          onClick={() => deleteCustomer(row)}
         />
       ),
     },
@@ -105,37 +110,124 @@ export default function Customers() {
   const handleOpenAddItemModal = () => {
     setAddItemModalOpen(true);
   };
-  const handleRemoveCustomer = (customer: ICustomer) => {
-    setCustomerData(
-      customerData?.filter(
-        (p) => !(p.discount_card_number === customer.discount_card_number)
-      )
-    );
+
+  const deleteCustomer = async (customer: ICustomer) => {
+    const { discount_card_number } = customer;
+    try {
+      const response = await deleteCustomerRequest(discount_card_number);
+      if (response.affectedRows <= 0) {
+        toast.error(
+          `Error deleting customer with discount card ${discount_card_number}. Zero rows were updated in query`
+        );
+        return;
+      }
+      await fetchCustomers();
+      //TODO: Figure out why useState is being dumb
+      // setCustomerData(
+      //   customerData?.filter(
+      //     (p) => !(p.discount_card_number === customer.discount_card_number)
+      //   )
+      // );
+      toast.success(`Deleted customer ${discount_card_number}!`);
+    } catch (error) {
+      toast.error(
+        `Error deleting customer Id ${discount_card_number}: ${error}`,
+        {
+          autoClose: false,
+        }
+      );
+    }
   };
 
-  const handleEntityEditedSubmited = (config: Partial<ICustomer>) => {
-    let data: ICustomer[] = customerData ? [...customerData] : [];
+  const getCustomerEditObject = (
+    config: Partial<ICustomer>,
+    originalObject: ICustomer
+  ): ICustomer => {
+    const editCustomerRequest: ICustomer = {
+      birth_date: config.birth_date ?? originalObject.birth_date,
+      discount_card_number:
+        config.discount_card_number ?? originalObject.discount_card_number,
+      first_name: config.first_name ?? originalObject.first_name,
+      last_name: config.last_name ?? originalObject.last_name,
+    };
+    return editCustomerRequest;
+  };
+
+  const handleEntityEditedSubmited = async (config: Partial<ICustomer>) => {
+    if (Object.keys(config).length <= 1) {
+      toast.info(
+        `Did not update customer with ID ${config?.discount_card_number}, no data was changed`
+      );
+      return;
+    }
+    let data: ICustomer[] = [...customerData!];
     let customerIndex = data?.findIndex(
       (p) => p.discount_card_number === config?.discount_card_number
     );
     if (customerIndex === -1) {
       return;
     }
-    data[customerIndex] = {
-      ...data[customerIndex],
-      ...config,
-    };
-    setCustomerData(data);
+    const customerEditRequest = getCustomerEditObject(
+      config,
+      data[customerIndex]
+    );
+    try {
+      const response = await updateCustomerRequest(customerEditRequest);
+      if (response.affectedRows <= 0) {
+        toast.error(
+          `Did not update any rows with edit request for customer ID ${config.discount_card_number}`
+        );
+      }
+      data[customerIndex] = {
+        ...data[customerIndex],
+        ...config,
+      };
+      setCustomerData(data);
+      toast.success(`Updated customer ID ${config.discount_card_number}!`);
+    } catch (error) {
+      toast.error(
+        `Error updating customer ID ${config.discount_card_number}: ${error}`
+      );
+    }
   };
 
-  const handleCustomerAddSubmited = (config: {}) => {
-    const addCustomerData = { ...config } as ICustomer;
-    if (IsObjectNullOrEmpty(addCustomerData)) {
+  const isValidCustomerAddRequest = (customer: ICustomer): boolean => {
+    if (
+      customer.birth_date === undefined ||
+      customer.discount_card_number === undefined ||
+      customer.first_name === undefined ||
+      customer.last_name === undefined
+    ) {
+      return false;
+    }
+    return true;
+  };
+
+  const handleAddEntitySubmited = async (config: { [key: string]: any }) => {
+    const addData = config as ICustomer;
+    console.log("customer data", addData);
+    if (IsObjectNullOrEmpty(addData)) {
+      return;
+    } else if (!isValidCustomerAddRequest(addData)) {
+      toast.error(`Invalid add request. Some fields are undefined.`, {
+        autoClose: false,
+      });
       return;
     } else {
-      setCustomerData(
-        customerData ? [...customerData, addCustomerData] : [addCustomerData]
-      );
+      try {
+        const response = await addCustomerRequest(addData);
+        if (response.affectedRows > 0) {
+          toast.success(
+            `Added customer with Id: ${addData.discount_card_number}!`
+          );
+        } else {
+          toast.error(`Failed to add customer. Affected rows was 0`);
+          return;
+        }
+        setCustomerData(customerData ? [...customerData, addData] : [addData]);
+      } catch (error) {
+        toast.error(`Failed to add transaction. ${error}`);
+      }
     }
   };
 
@@ -163,7 +255,7 @@ export default function Customers() {
           )}
         </Loading>
         <AddItemFormModalHelper
-          handleAddEntitySubmited={handleCustomerAddSubmited}
+          handleAddEntitySubmited={handleAddEntitySubmited}
           formType={AddFormTypes.customer}
           handleAddItemToggle={handleAddItemToggle}
           addItemModalOpen={addItemModalOpen}

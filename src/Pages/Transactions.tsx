@@ -182,7 +182,7 @@ export default function Transactions() {
 
   const isValidTransactionAddRequest = (
     transactionAddRequest: ITransactionAddRequest
-  ) => {
+  ): boolean => {
     if (
       transactionAddRequest.discount_card_number === undefined ||
       transactionAddRequest.deal_id === undefined ||
@@ -273,15 +273,15 @@ export default function Transactions() {
       return;
     }
     let data: ICustomerRestaurantTransaction[] = [...transactionData!];
-    let customerIndex = data?.findIndex(
+    let transactionIndex = data?.findIndex(
       (p) => p.transaction_id === config?.transaction_id
     );
-    if (customerIndex === -1) {
+    if (transactionIndex === -1) {
       return;
     }
     const transactionEditRequest = getTransactioneditObject(
       config,
-      data[customerIndex]
+      data[transactionIndex]
     );
     try {
       const response = await editTransactionRequest(transactionEditRequest);
@@ -290,8 +290,8 @@ export default function Transactions() {
           `Did not update any rows with edit request for transaction ${config.transaction_id}`
         );
       }
-      data[customerIndex] = {
-        ...data[customerIndex],
+      data[transactionIndex] = {
+        ...data[transactionIndex],
         ...config,
       };
       setTransactionData(data);
@@ -302,6 +302,7 @@ export default function Transactions() {
       );
     }
   };
+
   const toggleEditItem = () => {
     setEditItemModalOpen(!editItemModalIsOpen);
   };
