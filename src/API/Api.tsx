@@ -148,6 +148,18 @@ export const getChains = async () => {
       throw error;
     });
 };
+
+export const filterChainsAsync = async (chainName: string) => {
+  return axios
+    .get<IRestaurantChain[]>(`${baseUrl}/chains/filter?chain_name=${chainName}`)
+    .then((response) => {
+      return response.data;
+    })
+    .catch((error) => {
+      throw error;
+    });
+};
+
 export const deleteChainRequest = async (chainName: string) => {
   return axios
     .delete<IAddApiResponse>(`${baseUrl}/chains?chain_name=${chainName}`)

@@ -1,18 +1,22 @@
 import React, { useState, useEffect } from "react";
 import Layout from "../Containers/Layout";
-import { textFilter } from "react-bootstrap-table2-filter";
+import filterFactory, { textFilter } from "react-bootstrap-table2-filter";
 import AddItem from "../Components/AddItem";
 import { AddFormTypes } from "../Enums";
 import { IRestaurantChain } from "../Interfaces";
 import { IsObjectNullOrEmpty } from "../Utils";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import { faMinusCircle } from "@fortawesome/free-solid-svg-icons";
-import { ChainMockList } from "../Mocks/Chains.mock";
-import DataEntityTable from "./Components/DataTable";
 import AddItemFormModalHelper from "./Components/AddItemFormModalHelper";
-import { getChains, deleteChainRequest, addChainRequest } from "../API/Api";
+import {
+  getChains,
+  deleteChainRequest,
+  addChainRequest,
+  filterChainsAsync,
+} from "../API/Api";
 import { toast } from "react-toastify";
 import Loading from "./Components/Loading";
+import BootstrapTable from "react-bootstrap-table-next";
 
 export default function Chains() {
   const [isLoading, setIsLoading] = useState(false);
@@ -89,6 +93,19 @@ export default function Chains() {
     }
   };
 
+  const fetchfilterChains = async (chainName: string) => {
+    try {
+      console.log("chainname", chainName);
+      const chains = await filterChainsAsync(chainName);
+      console.log("fetched chains", chains);
+      setChainData(chains);
+      setIsLoading(false);
+    } catch (error) {
+      toast.error(`Unable to fetch chains. ${error}`);
+      setIsLoading(false);
+    }
+  };
+
   const handleAddEntitySubmited = async (config: Partial<IRestaurantChain>) => {
     console.log("config", config);
     const addData = { ...config } as IRestaurantChain;
@@ -121,6 +138,14 @@ export default function Chains() {
     }
   };
 
+  const onTableChange = (type: any, { filters }: any) => {
+    if (!filters?.chain_name?.filterVal) {
+      fetchChains();
+      return;
+    }
+    fetchfilterChains(filters.chain_name.filterVal);
+  };
+
   return (
     <Layout>
       <div style={{ padding: "30px", maxWidth: "90%" }}>
@@ -132,10 +157,15 @@ export default function Chains() {
         </div>
         <Loading isLoading={isLoading}>
           {chainData && (
-            <DataEntityTable
-              keyField="chain_name"
+            <BootstrapTable
+              remote={{ filter: true }}
+              keyField={"chain_name"}
               data={chainData}
               columns={columns}
+              filter={filterFactory()}
+              bordered
+              onTableChange={onTableChange}
+              striped
             />
           )}
         </Loading>
