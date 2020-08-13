@@ -2,7 +2,7 @@ import {
   ICustomerRestaurantTransaction,
   ILocationDeal,
 } from "../../Interfaces";
-import { RestaurantChainLocationMock, DealMockList } from "../../Mocks";
+import { RestaurantChainLocationMock } from "../../Mocks";
 
 export const FormatterChainName = (
   cell: any,
@@ -36,5 +36,8 @@ export const FormatterDeal = (
   cell: any,
   row: ICustomerRestaurantTransaction | ILocationDeal
 ) => {
+  if (cell === null || cell === undefined) {
+    return "NULL";
+  }
   return `${cell}%`;
 };

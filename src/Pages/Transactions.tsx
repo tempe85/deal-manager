@@ -185,7 +185,6 @@ export default function Transactions() {
   ): boolean => {
     if (
       transactionAddRequest.discount_card_number === undefined ||
-      transactionAddRequest.deal_id === undefined ||
       transactionAddRequest.date === undefined ||
       transactionAddRequest.chain_location_id === undefined
     ) {
@@ -219,9 +218,12 @@ export default function Transactions() {
     if (IsObjectNullOrEmpty(addData)) {
       return;
     } else if (!isValidTransactionAddRequest(addData)) {
-      toast.error(`Invalid add request. Some fields are undefined.`, {
-        autoClose: false,
-      });
+      toast.error(
+        `Invalid add request. Some fields other than Deal Id are undefined.`,
+        {
+          autoClose: false,
+        }
+      );
       return;
     } else {
       try {
