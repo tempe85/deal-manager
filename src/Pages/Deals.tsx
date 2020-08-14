@@ -101,6 +101,7 @@ export default class Deals extends React.Component<{}, IState> {
     });
   };
 
+  //Implementing Delete for Deals
   private deleteDeal = async (deal: IDeal) => {
     try {
       await deleteDealRequest(deal.deal_id);
@@ -118,6 +119,7 @@ export default class Deals extends React.Component<{}, IState> {
     }
   };
 
+  //Implementing Display for Deals
   private fetchDeals = () => {
     this.setState(
       {
@@ -139,6 +141,7 @@ export default class Deals extends React.Component<{}, IState> {
     );
   };
 
+  //Implementing Create for Deals
   private addDeal = async (percent_discount: number) => {
     if (percent_discount === undefined || percent_discount < 0) {
       toast.error("Discount was undefined or negative");
@@ -162,6 +165,7 @@ export default class Deals extends React.Component<{}, IState> {
     }
   };
 
+  //Implementing Update for Deals
   private editDeal = async (newDeal: IDeal) => {
     console.log("newDeal", newDeal);
     try {

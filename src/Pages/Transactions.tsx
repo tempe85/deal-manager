@@ -47,6 +47,7 @@ export default function Transactions() {
     }
   }, [isLoading]);
 
+  //Implmenting select for transactions
   const fetchTransactions = async () => {
     try {
       const transactions = await getTransactions();
@@ -134,6 +135,7 @@ export default function Transactions() {
     },
   ];
 
+  //Implementing delete for transactions
   const deleteTransaction = async (
     transaction: ICustomerRestaurantTransaction
   ) => {
@@ -215,6 +217,7 @@ export default function Transactions() {
     return transaction;
   };
 
+  //Implementing insert for transactions
   const handleAddEntitySubmited = async (config: { [key: string]: any }) => {
     const addData = getTransactionAddRequestObject(config);
     if (IsObjectNullOrEmpty(addData)) {
@@ -267,6 +270,8 @@ export default function Transactions() {
 
     return editTransactionRequest;
   };
+
+  //Implementing update for Transactions
   const handleEntityEditedSubmited = async (
     config: Partial<ICustomerRestaurantTransaction>
   ) => {

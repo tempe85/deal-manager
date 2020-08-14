@@ -101,6 +101,7 @@ export default function RestaurantChainLocations() {
     }
   }, [isLoading]);
 
+  //Implmementing Display for Locations
   const fetchLocations = async () => {
     try {
       const locations = await getLocations();
@@ -119,6 +120,7 @@ export default function RestaurantChainLocations() {
     setAddItemModalOpen(true);
   };
 
+  //Implmementing Delete for Locations
   const deleteLocation = async (chainLocation: IRestaurantChainLocation) => {
     const { chain_location_id } = chainLocation;
     try {
@@ -179,6 +181,7 @@ export default function RestaurantChainLocations() {
     return chainLocationObject;
   };
 
+  //Implmementing Create for Locations
   const handleAddEntitySubmited = async (
     config: Partial<IRestaurantChainLocation>
   ) => {
@@ -220,6 +223,7 @@ export default function RestaurantChainLocations() {
     return editLocationRequest;
   };
 
+  //Implmementing Update for Locations
   const handleEntityEditedSubmited = async (
     config: Partial<IRestaurantChainLocation>
   ) => {

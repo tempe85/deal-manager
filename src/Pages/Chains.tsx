@@ -33,6 +33,7 @@ export default function Chains() {
     }
   }, [isLoading]);
 
+  //Implementing Display for Restaurant Chain
   const fetchChains = async () => {
     try {
       const chains = await getChains();
@@ -75,6 +76,7 @@ export default function Chains() {
     setAddItemModalOpen(true);
   };
 
+  //Implementing Delete for Restaurant Chain
   const deleteChain = async (restaurantChain: IRestaurantChain) => {
     console.log(restaurantChain);
     const { chain_name } = restaurantChain;
@@ -95,6 +97,7 @@ export default function Chains() {
     }
   };
 
+    //Implementing Filter for Restaurant Chain
   const fetchfilterChains = async (chainName: string) => {
     try {
       console.log("chainname", chainName);
@@ -108,6 +111,7 @@ export default function Chains() {
     }
   };
 
+    //Implementing Update for Restaurant Chain
   const handleAddEntitySubmited = async (config: Partial<IRestaurantChain>) => {
     console.log("config", config);
     const addData = { ...config } as IRestaurantChain;

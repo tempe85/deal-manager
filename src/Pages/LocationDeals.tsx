@@ -37,6 +37,7 @@ export default function LocationDeals() {
     }
   }, [isLoading]);
 
+  //Implementing Display for Location Deals
   const fetchLocationDeals = async () => {
     try {
       const locationDeals = await getLocationDeals();
@@ -97,6 +98,7 @@ export default function LocationDeals() {
     setAddItemModalOpen(true);
   };
 
+  //Implementing Delete for Location Deals
   const deleteLocationDeal = async (locationDeal: ILocationDeal) => {
     const { deal_id, chain_location_id } = locationDeal;
     try {
@@ -143,6 +145,7 @@ export default function LocationDeals() {
     return true;
   };
 
+  //Implementing Create for Location Deals
   const handleAddEntitySubmited = async (config: Partial<ILocationDeal>) => {
     const addData = getLocationDealAddRequestObject(config);
     if (IsObjectNullOrEmpty(addData)) {
@@ -176,6 +179,7 @@ export default function LocationDeals() {
     }
   };
 
+  //Implementing Update for Location Deals
   const handleEntityEditedSubmited = (config: Partial<ILocationDeal>) => {};
 
   const toggleEditItem = () => {

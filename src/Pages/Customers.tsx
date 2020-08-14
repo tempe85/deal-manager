@@ -41,6 +41,7 @@ export default function Customers() {
     }
   }, [isLoading]);
 
+  //Implementing Display for customers
   const fetchCustomers = async () => {
     try {
       const customers = await getCustomers();
@@ -113,6 +114,7 @@ export default function Customers() {
     setAddItemModalOpen(true);
   };
 
+  //Implementing Delete Customer Table
   const deleteCustomer = async (customer: ICustomer) => {
     const { discount_card_number } = customer;
     try {
@@ -155,6 +157,7 @@ export default function Customers() {
     return editCustomerRequest;
   };
 
+  //Implementing Edit for Customer
   const handleEntityEditedSubmited = async (config: Partial<ICustomer>) => {
     if (Object.keys(config).length <= 1) {
       toast.info(
@@ -205,6 +208,7 @@ export default function Customers() {
     return true;
   };
 
+  //Implementing Update for Customer
   const handleAddEntitySubmited = async (config: { [key: string]: any }) => {
     const addData = config as ICustomer;
     console.log("customer data", addData);
