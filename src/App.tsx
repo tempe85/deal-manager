@@ -12,12 +12,6 @@ import Deals from "./Pages/Deals";
 import "react-bootstrap-table-next/dist/react-bootstrap-table2.min.css";
 
 export const routes = [
-  // {
-  //   path: "/",
-  //   exact: true,
-  //   sidebar: () => <div></div>,
-  //   main: () => <Dashboard />,
-  // },
   {
     path: "/",
     exact: true,
@@ -57,18 +51,20 @@ export const routes = [
 ];
 function App() {
   return (
-    <Router>
-      <Switch>
-        {routes.map((route, index) => (
-          <Route
-            key={index}
-            path={route.path}
-            exact={route.exact}
-            children={<route.main />}
-          />
-        ))}
-      </Switch>
-    </Router>
+    <>
+      <Router>
+        <Switch>
+          {routes.map((route, index) => (
+            <Route
+              key={index}
+              path={route.path}
+              exact={route.exact}
+              children={<route.main />}
+            />
+          ))}
+        </Switch>
+      </Router>
+    </>
   );
 }
 
