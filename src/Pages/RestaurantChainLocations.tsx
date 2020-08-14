@@ -22,6 +22,8 @@ import {
 import { toast } from "react-toastify";
 import Loading from "./Components/Loading";
 
+//Implementing Location Restaurant Chain Location Table
+
 export default function RestaurantChainLocations() {
   const columns = [
     {

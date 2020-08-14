@@ -24,6 +24,8 @@ import { toast } from "react-toastify";
 import { FormatterDeal } from "../Utils/Formatters/Formatter";
 import Loading from "./Components/Loading";
 
+//Implementing Transaction table
+
 export default function Transactions() {
   const [isLoading, setIsLoading] = useState(false);
   const [addItemModalOpen, setAddItemModalOpen] = useState(false);

@@ -18,6 +18,8 @@ import { toast } from "react-toastify";
 import Loading from "./Components/Loading";
 import BootstrapTable from "react-bootstrap-table-next";
 
+//Implementing Restaurant Chain Table
+
 export default function Chains() {
   const [isLoading, setIsLoading] = useState(false);
   useEffect(() => {

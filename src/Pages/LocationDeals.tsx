@@ -18,6 +18,8 @@ import {
 } from "../API/Api";
 import { toast } from "react-toastify";
 
+//Implementing Location Deal Table
+
 export default function LocationDeals() {
   const [addItemModalOpen, setAddItemModalOpen] = useState(false);
   const [editItemModalIsOpen, setEditItemModalOpen] = useState(false);

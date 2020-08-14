@@ -19,6 +19,8 @@ import {
 import { toast } from "react-toastify";
 import Loading from "./Components/Loading";
 
+//Implementing Customer Table
+
 export default function Customers() {
   const [isLoading, setIsLoading] = useState(false);
   const [addItemModalOpen, setAddItemModalOpen] = useState(false);

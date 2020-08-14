@@ -27,6 +27,8 @@ interface IState {
   editItemModalIsOpen: boolean;
 }
 
+//Implementing Deal Table
+
 export default class Deals extends React.Component<{}, IState> {
   public readonly state: IState = {
     isLoading: false,
@@ -144,8 +146,8 @@ export default class Deals extends React.Component<{}, IState> {
     }
     try {
       const response = await addDealRequest(percent_discount);
-      if(response.affectedRows <= 0){
-        toast.error(`Unable to add deal, 0 rows were updated in query`)
+      if (response.affectedRows <= 0) {
+        toast.error(`Unable to add deal, 0 rows were updated in query`);
       }
       const deal_id = response.insertId;
       const newDeal: IDeal = { percent_discount, deal_id };
