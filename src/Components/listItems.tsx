@@ -15,14 +15,6 @@ import "./styles.css";
 export const mainListItems = (
   <List>
     <div className="side-bar-list">
-      {/* <Link to="/">
-        <ListItem button>
-          <ListItemIcon>
-            <DashboardIcon />
-          </ListItemIcon>
-          <ListItemText primary="Dashboard" />
-        </ListItem>
-      </Link> */}
       <Link to="/">
         <ListItem button>
           <ListItemIcon>
